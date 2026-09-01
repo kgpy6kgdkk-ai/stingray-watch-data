@@ -91,6 +91,22 @@ have evolved since this file was written. Do not proceed until you've read it.
    to reflect a fresh push — don't treat a stale response as failure if the
    push itself (`git log`, `git status`) confirms the commit landed.
 
+9. **Email a run summary to `jared@stingrayfraud.com`** using the Gmail
+   tool, every run, regardless of outcome. Subject line should make the
+   outcome scannable at a glance, e.g. `Fraud Sonar weekly refresh: 3 items
+   added` or `Fraud Sonar weekly refresh: 0 items added` or `Fraud Sonar
+   weekly refresh: FAILED at step N`. Body should include:
+   - What was added: for each new item, its tag, one-line text, source
+     link, and which panel (ticker/marketplace).
+   - If fewer than 2 items were added (including zero), a short honest note
+     on why (e.g. "search returned mostly duplicates of items already
+     posted this month" or "no sources cleared the verification bar this
+     week") — don't leave this unexplained.
+   - Confirmation that `feed.json`/`archive.json` both validated as JSON
+     and the push succeeded, or the specific step/error if something failed.
+   - If any step failed partway (e.g. push succeeded but verification
+     couldn't confirm it), say so plainly rather than reporting success.
+
 ## What NOT to do
 
 - Don't touch anything outside `feed.json`/`archive.json` in this repo.
