@@ -4,6 +4,8 @@ Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) ticker and mar
 
 `feed.json` is fetched client-side by the Carrd embed at page load — updating this file updates the live site with no need to touch or republish Carrd.
 
+`archive.json` powers a second, separate on-page section (the permanent archive, below the live ticker) — see [Archive](#archivejson-permanent-history) below.
+
 ## Schema
 
 ```json
@@ -51,7 +53,7 @@ https://raw.githubusercontent.com/<owner>/fraud-sonar-data/main/feed.json
 
 Edit `feed.json` and push to `main`. Keep entries sourced and verified — no fabricated links, no personal-anecdote scam stories, prefer named companies/publications/subreddits over generic claims.
 
-### Retention: rolling 90-day archive
+### Retention: feed.json is a rolling 90-day window
 
 `ticker` and `marketplace` are **not** fixed-size — they're a rolling 90-day window. Each weekly run should:
 
@@ -61,3 +63,27 @@ Edit `feed.json` and push to `main`. Keep entries sourced and verified — no fa
 4. Skip a candidate if it's a near-duplicate of an item already in the file (same link, or same story already covered in the last ~14 days).
 
 Array length will drift with real publishing volume — that's expected. A quiet week for a given fraud vector just means its filter chip shows fewer (or temporarily zero) results, which the site already handles gracefully.
+
+## archive.json: permanent history
+
+Carrd can't host a separate `/archive` page (it's a single-page builder), so instead of individually-indexable permalinks per item, the archive lives as a second growing section on the same page — everything ever published, never pruned. This is the only piece of the site whose SEO value compounds over time instead of resetting each week the ticker rotates.
+
+Schema is a flat array under `items`, each entry the same shape as a `feed.json` row plus a `panel` field (`"ticker"` or `"marketplace"`) saying which panel it originally appeared in:
+
+```json
+{
+  "items": [
+    {
+      "panel": "ticker",
+      "tag": "SIGNIFYD",
+      "vector": "AGENTIC_AI",
+      "text": "...",
+      "link": "https://...",
+      "linkLabel": "signifyd.com",
+      "published": "2026-08-31T20:08:00Z"
+    }
+  ]
+}
+```
+
+**Updating `archive.json`:** whenever new items are added to `feed.json`, also **prepend** those same items (with `panel` added) to `archive.json`'s `items` array. Never remove or edit existing entries — this file should only ever grow. There's currently no scheduled job doing this automatically; it's a manual step alongside the weekly `feed.json` update until one exists.
