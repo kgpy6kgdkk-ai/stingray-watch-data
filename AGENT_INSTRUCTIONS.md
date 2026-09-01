@@ -27,13 +27,18 @@ have evolved since this file was written. Do not proceed until you've read it.
    fraud", "agentic AI fraud shopping". Vary queries — don't just run one
    search and stop.
 
+   **Always specifically check frankonfraud.com** (Frank McKenna's Frank
+   on Fraud blog) for recent posts, in addition to general search — either
+   search `site:frankonfraud.com` for the topic angles above, or fetch the
+   site directly, to see what's been posted in the last 1-2 weeks.
+
 3. **Apply editorial judgment. This is the part that matters most — do not
    just post whatever search returns.** Select **2-4 new items** using
    these filters:
    - Prefer named companies, publications, or industry-research sources
      (e.g. Signifyd, TransUnion, Chargebacks911, Merchant Risk Council,
-     named trade press, named security researchers) over generic or
-     unsourced claims.
+     Frank on Fraud (frankonfraud.com), named trade press, named security
+     researchers) over generic or unsourced claims.
    - Community sources (Reddit, forums) are fine **only** when they
      document a verifiable pattern multiple people are independently
      reporting — never an individual "I got scammed" personal-anecdote
