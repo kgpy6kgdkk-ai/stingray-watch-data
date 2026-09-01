@@ -48,3 +48,14 @@ https://raw.githubusercontent.com/<owner>/fraud-sonar-data/main/feed.json
 ## Updating
 
 Edit `feed.json` and push to `main`. Keep entries sourced and verified — no fabricated links, no personal-anecdote scam stories, prefer named companies/publications/subreddits over generic claims.
+
+### Retention: rolling 90-day archive
+
+`ticker` and `marketplace` are **not** fixed-size — they're a rolling 90-day window. Each weekly run should:
+
+1. **Append** 2-4 new verified items to the appropriate array (don't overwrite existing ones).
+2. **Prune** any item whose `published` timestamp is more than 90 days before the current date, from either array.
+3. **Re-sort** each array by `published` descending (newest first) before writing — the site does not re-sort client-side beyond a defensive sort, so keep the file itself in order.
+4. Skip a candidate if it's a near-duplicate of an item already in the file (same link, or same story already covered in the last ~14 days).
+
+Array length will drift with real publishing volume — that's expected. A quiet week for a given fraud vector just means its filter chip shows fewer (or temporarily zero) results, which the site already handles gracefully.
