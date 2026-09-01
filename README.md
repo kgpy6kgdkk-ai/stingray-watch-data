@@ -1,6 +1,6 @@
 # fraud-sonar-data
 
-Data feed for the [Fraud Sonar](https://stingray-sonar.carrd.co/) ticker and marketplace-watch panels.
+Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) ticker and marketplace-watch panels.
 
 `feed.json` is fetched client-side by the Carrd embed at page load — updating this file updates the live site with no need to touch or republish Carrd.
 
