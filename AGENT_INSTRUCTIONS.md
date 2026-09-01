@@ -1,0 +1,103 @@
+# Weekly refresh — agent instructions
+
+You are running unattended, on a schedule, with no human review before your
+changes go live on a public page (sonar.stingrayfraud.com fetches
+`feed.json`/`archive.json` from this repo's `main` branch directly). Be
+conservative: when genuinely uncertain about a source's credibility or a
+claim's accuracy, skip it rather than include it.
+
+## What this repo is
+
+Data feed for [Fraud Sonar](https://sonar.stingrayfraud.com/), a weekly feed
+of chargeback trends, fraud patterns, and marketplace fraud signals for
+Stingray Fraud Intelligence. Read `README.md` in this repo now for the full
+schema — it's the source of truth, more detailed than this file, and may
+have evolved since this file was written. Do not proceed until you've read it.
+
+## Your task, in order
+
+1. **Read `README.md`, `feed.json`, and `archive.json`** in this checkout
+   first. You need the current contents of both JSON files to de-duplicate
+   against in step 3.
+
+2. **Research fresh signal.** Use web search for current (last 7-14 days)
+   e-commerce and marketplace fraud news. Good query angles: "e-commerce
+   fraud trends", "chargeback fraud news", "marketplace fraud", "account
+   takeover fraud statistics", "refund abuse", "counterfeit marketplace
+   fraud", "agentic AI fraud shopping". Vary queries — don't just run one
+   search and stop.
+
+3. **Apply editorial judgment. This is the part that matters most — do not
+   just post whatever search returns.** Select **2-4 new items** using
+   these filters:
+   - Prefer named companies, publications, or industry-research sources
+     (e.g. Signifyd, TransUnion, Chargebacks911, Merchant Risk Council,
+     named trade press, named security researchers) over generic or
+     unsourced claims.
+   - Community sources (Reddit, forums) are fine **only** when they
+     document a verifiable pattern multiple people are independently
+     reporting — never an individual "I got scammed" personal-anecdote
+     post. Those are real but off-tone for a B2B fraud-intelligence feed.
+   - **Verify every link actually resolves and its content matches the
+     claim you're citing it for**, by fetching it, before including it.
+     Never fabricate or guess a URL. If you can't confirm a source
+     first-hand, drop the item — don't include it "probably right."
+   - Check the selected items against what's **already in `feed.json` and
+     `archive.json`** (read in step 1) — skip near-duplicates (same
+     underlying story or stat, even from a different source article) and
+     skip anything covering the same specific fact already posted in the
+     last ~14 days.
+   - Split selections between `ticker` (general industry signal) and
+     `marketplace` (two-sided marketplace-specific trends) based on which
+     the item actually fits — see `README.md` for what each panel means.
+
+4. **Format each selected item** per `README.md`'s schema: `tag`, `vector`
+   (must be an existing key in `vectorTaxonomy` in `feed.json` — only add a
+   new taxonomy key if you're tagging an item to it right now, per the
+   README's note about dead-end filter chips), `text`, `link`, `linkLabel`,
+   `published` (ISO 8601 UTC, current timestamp).
+
+5. **Update `feed.json`:**
+   - Append new items to the appropriate array(s) (`ticker`/`marketplace`).
+   - Prune any item whose `published` is more than 90 days before now, from
+     either array.
+   - Re-sort each array by `published` descending.
+   - Validate: `python3 -m json.tool feed.json > /dev/null` must succeed.
+
+6. **Update `archive.json`:**
+   - Prepend the same new items (each with a `panel` field:
+     `"ticker"` or `"marketplace"`) to the `items` array.
+   - **Never remove, edit, or reorder existing entries.** This file is
+     append-only by design — it's the one part of the site whose SEO value
+     compounds over time instead of resetting weekly, and that only holds
+     if nothing already in it is ever touched.
+   - Validate: `python3 -m json.tool archive.json > /dev/null` must succeed.
+
+7. **Commit and push to `main`:**
+   ```bash
+   git add feed.json archive.json
+   git commit -m "Weekly fraud signal refresh: <n> new items (<short description>)"
+   git push
+   ```
+   Write a real, specific commit message — what was actually added, not
+   just "update feed."
+
+8. **Verify the push landed correctly:**
+   ```bash
+   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/fraud-sonar-data/main/feed.json | python3 -m json.tool > /dev/null && echo "feed.json OK"
+   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/fraud-sonar-data/main/archive.json | python3 -m json.tool > /dev/null && echo "archive.json OK"
+   ```
+   Note: the raw URL is served through a CDN and may take a minute or two
+   to reflect a fresh push — don't treat a stale response as failure if the
+   push itself (`git log`, `git status`) confirms the commit landed.
+
+## What NOT to do
+
+- Don't touch anything outside `feed.json`/`archive.json` in this repo.
+- Don't overwrite, reorder, or delete anything in `archive.json`.
+- Don't skip the de-duplication check against existing entries.
+- Don't invent a taxonomy vector, a link, or a statistic. If a claim or
+  source can't be verified, leave it out.
+- If you end up with fewer than 2 well-sourced, non-duplicate items this
+  run, it's fine to post fewer (even zero) — do not lower your bar just to
+  hit a target count.
