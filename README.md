@@ -9,16 +9,18 @@ Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) ticker and mar
 ```json
 {
   "vectorTaxonomy": {
-    "REFUND_ABUSE": "refund abuse",              // fixed, closed list — do not add
-    "CHARGEBACK_DISPUTE": "chargebacks & disputes", // new codes without also updating
-    "ACCOUNT_TAKEOVER": "account takeover",         // the Carrd filter-chip UI, which
-    "TRIANGULATION": "triangulation fraud",         // reads this object to build its
-    "CARD_TESTING": "card testing",                 // chip list.
+    "REFUND_ABUSE": "refund abuse",
+    "CHARGEBACK_DISPUTE": "chargebacks & disputes",
+    "ACCOUNT_TAKEOVER": "account takeover",
+    "TRIANGULATION": "triangulation fraud",
+    "CARD_TESTING": "card testing",
     "COUNTERFEIT": "counterfeit / authenticity",
     "LISTING_FRAUD": "fake listings",
     "AUCTION_ABUSE": "auction / bidding abuse",
     "SOCIAL_ENGINEERING": "social engineering",
     "AGENTIC_AI": "agentic AI fraud",
+    "STOLEN_PAYMENT": "stolen payment methods",
+    "PROMO_ABUSE": "promo abuse",
     "INDUSTRY_NEWS": "industry news"
   },
   "ticker": [
@@ -37,7 +39,7 @@ Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) ticker and mar
 
 ### Fraud vectors
 
-Every item must carry a `vector` field set to one of the keys in `vectorTaxonomy`. This is what lets a visitor filter the live feed down to a specific fraud pattern (e.g. only "counterfeit / authenticity" items). The taxonomy is intentionally closed — pick the closest existing category rather than inventing a new one, since new codes won't have a filter chip on the site until `vectorTaxonomy` and the Carrd embed are both updated to match.
+Every item must carry a `vector` field set to one of the keys in `vectorTaxonomy`. This is what lets a visitor filter the live feed down to a specific fraud pattern (e.g. only "counterfeit / authenticity" items). The site's filter-chip bar is built dynamically from this object at page load — adding a new key here is enough to give it a chip, no Carrd changes needed. Still, keep the list deliberate: adding a code without also tagging items to it just gives visitors a dead-end chip that always shows "no items tagged this vector."
 
 ## Raw URL (for the Carrd embed's fetch)
 

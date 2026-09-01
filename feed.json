@@ -10,6 +10,8 @@
     "AUCTION_ABUSE": "auction / bidding abuse",
     "SOCIAL_ENGINEERING": "social engineering",
     "AGENTIC_AI": "agentic AI fraud",
+    "STOLEN_PAYMENT": "stolen payment methods",
+    "PROMO_ABUSE": "promo abuse",
     "INDUSTRY_NEWS": "industry news"
   },
   "ticker": [
