@@ -27,14 +27,24 @@ have evolved since this file was written. Do not proceed until you've read it.
    fraud", "agentic AI fraud shopping". Vary queries — don't just run one
    search and stop.
 
+   **Also search the high-risk item categories specifically** (this feeds
+   the `highrisk` panel — see README for what qualifies): sneakers,
+   streetwear, TCG/Pokémon and sports cards, bullion (gold/silver/precious
+   metals), electronics (phones, laptops), designer bags. Query angles:
+   "[category] counterfeit fraud", "[category] resale scam", "[category]
+   authentication fraud". Don't force it — if a category has no
+   well-sourced news this week, skip it rather than stretch a weak source
+   to fill it.
+
    **Always specifically check frankonfraud.com** (Frank McKenna's Frank
    on Fraud blog) for recent posts, in addition to general search — either
    search `site:frankonfraud.com` for the topic angles above, or fetch the
    site directly, to see what's been posted in the last 1-2 weeks.
 
 3. **Apply editorial judgment. This is the part that matters most — do not
-   just post whatever search returns.** Select **2-4 new items** using
-   these filters:
+   just post whatever search returns.** Select **2-4 new items per panel**
+   (not 2-4 total — `ticker`, `marketplace`, and `highrisk` each get their
+   own bar to clear) using these filters:
    - Prefer named companies, publications, or industry-research sources
      (e.g. Signifyd, TransUnion, Chargebacks911, Merchant Risk Council,
      Frank on Fraud (frankonfraud.com), named trade press, named security
@@ -52,9 +62,14 @@ have evolved since this file was written. Do not proceed until you've read it.
      underlying story or stat, even from a different source article) and
      skip anything covering the same specific fact already posted in the
      last ~14 days.
-   - Split selections between `ticker` (general industry signal) and
-     `marketplace` (two-sided marketplace-specific trends) based on which
-     the item actually fits — see `README.md` for what each panel means.
+   - Split selections between `ticker` (general industry signal),
+     `marketplace` (two-sided marketplace **mechanics** — platform policy
+     and platform-level fraud technique, not product category), and
+     `highrisk` (fraud specific to a high-risk item category, regardless of
+     platform). **Read the "Which panel does an item belong in?" section of
+     README.md before categorizing anything** — the marketplace/highrisk
+     split is easy to get backwards (a StockX counterfeit story is
+     `highrisk`, not `marketplace`, even though StockX is a marketplace).
 
 4. **Format each selected item** per `README.md`'s schema: `tag`, `vector`
    (must be an existing key in `vectorTaxonomy` in `feed.json` — only add a
@@ -63,15 +78,15 @@ have evolved since this file was written. Do not proceed until you've read it.
    `published` (ISO 8601 UTC, current timestamp).
 
 5. **Update `feed.json`:**
-   - Append new items to the appropriate array(s) (`ticker`/`marketplace`).
+   - Append new items to the appropriate array(s) (`ticker`/`marketplace`/`highrisk`).
    - Prune any item whose `published` is more than 90 days before now, from
-     either array.
+     any of the three arrays.
    - Re-sort each array by `published` descending.
    - Validate: `python3 -m json.tool feed.json > /dev/null` must succeed.
 
 6. **Update `archive.json`:**
    - Prepend the same new items (each with a `panel` field:
-     `"ticker"` or `"marketplace"`) to the `items` array.
+     `"ticker"`, `"marketplace"`, or `"highrisk"`) to the `items` array.
    - **Never remove, edit, or reorder existing entries.** This file is
      append-only by design — it's the one part of the site whose SEO value
      compounds over time instead of resetting weekly, and that only holds
@@ -102,7 +117,7 @@ have evolved since this file was written. Do not proceed until you've read it.
    added` or `Fraud Sonar weekly refresh: 0 items added` or `Fraud Sonar
    weekly refresh: FAILED at step N`. Body should include:
    - What was added: for each new item, its tag, one-line text, source
-     link, and which panel (ticker/marketplace).
+     link, and which panel (ticker/marketplace/highrisk).
    - If fewer than 2 items were added (including zero), a short honest note
      on why (e.g. "search returned mostly duplicates of items already
      posted this month" or "no sources cleared the verification bar this

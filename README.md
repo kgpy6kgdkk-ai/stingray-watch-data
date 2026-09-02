@@ -1,6 +1,6 @@
 # fraud-sonar-data
 
-Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) ticker and marketplace-watch panels.
+Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) site: the industry-signal ticker, the marketplace-watch panel, and the high-risk-items panel.
 
 `feed.json` is fetched client-side by the Carrd embed at page load — updating this file updates the live site with no need to touch or republish Carrd.
 
@@ -35,13 +35,24 @@ Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) ticker and mar
       "published": "2026-08-31T20:08:00Z" // ISO 8601 UTC; rendered client-side as "22m ago" etc.
     }
   ],
-  "marketplace": [ /* same shape, rendered in the marketplace_watch.sh panel */ ]
+  "marketplace": [ /* same shape, rendered in the marketplace_watch.sh panel */ ],
+  "highrisk": [ /* same shape, rendered in the high_risk_items.sh panel */ ]
 }
 ```
 
 ### Fraud vectors
 
 Every item must carry a `vector` field set to one of the keys in `vectorTaxonomy`. This is what lets a visitor filter the live feed down to a specific fraud pattern (e.g. only "counterfeit / authenticity" items). The site's filter-chip bar is built dynamically from this object at page load — adding a new key here is enough to give it a chip, no Carrd changes needed. Still, keep the list deliberate: adding a code without also tagging items to it just gives visitors a dead-end chip that always shows "no items tagged this vector."
+
+### Which panel does an item belong in?
+
+This is the part that actually matters for keeping the site coherent — the three arrays are scoped by **different axes** (channel vs. item category), and it's easy to miscategorize an item if you're not paying attention to which axis it's on:
+
+- **`ticker`** — general industry signal. Fraud-prevention industry news, research reports, vendor announcements, broad trend data. Not tied to a specific platform or product category.
+- **`marketplace`** — **two-sided marketplace mechanics only.** Stories about how a specific two-sided marketplace (Etsy, eBay, Amazon, Whatnot, Vinted, etc.) runs its dispute/refund/bidding/review systems, and fraud patterns that exploit those *mechanics* (card testing against a platform's signup flow, shill bidding in a live auction, a platform's refund-policy change). If the story is about a *platform's operational choices or platform-level fraud technique*, it goes here — regardless of what product category happens to be involved.
+- **`highrisk`** — **specific high-fraud-risk item categories**, regardless of which platform the story happens to involve. Current scope: sneakers, streetwear, TCG/Pokémon and sports cards, bullion (gold/silver/precious metals), electronics (phones, laptops), and designer bags. If the story is fundamentally about counterfeiting, authentication failure, or fraud risk *specific to one of these product categories* — even if it happened on a marketplace also covered above — it goes here, not in `marketplace`. (Example: a StockX counterfeit-sneaker lawsuit is a `highrisk` item, not a `marketplace` item, even though StockX is a marketplace — the story is about sneaker authentication, not about how StockX's marketplace mechanics work.)
+
+When a story is genuinely both (e.g., a marketplace changes its policy specifically *because* of counterfeit sneakers flowing through it), pick whichever angle the story is actually about — usually the mechanics/policy change goes in `marketplace`, the underlying counterfeit-item stat goes in `highrisk`, and they can be two separate entries if both angles are independently newsworthy.
 
 ## Raw URL (for the Carrd embed's fetch)
 
@@ -55,7 +66,7 @@ Edit `feed.json` and push to `main`. Keep entries sourced and verified — no fa
 
 ### Retention: feed.json is a rolling 90-day window
 
-`ticker` and `marketplace` are **not** fixed-size — they're a rolling 90-day window. Each weekly run should:
+`ticker`, `marketplace`, and `highrisk` are **not** fixed-size — each is a rolling 90-day window. Each weekly run should:
 
 1. **Append** 2-4 new verified items to the appropriate array (don't overwrite existing ones).
 2. **Prune** any item whose `published` timestamp is more than 90 days before the current date, from either array.
