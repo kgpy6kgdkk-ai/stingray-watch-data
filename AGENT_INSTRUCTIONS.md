@@ -1,14 +1,14 @@
 # Weekly refresh — agent instructions
 
 You are running unattended, on a schedule, with no human review before your
-changes go live on a public page (sonar.stingrayfraud.com fetches
+changes go live on a public page (watch.stingrayfraud.com fetches
 `feed.json`/`archive.json` from this repo's `main` branch directly). Be
 conservative: when genuinely uncertain about a source's credibility or a
 claim's accuracy, skip it rather than include it.
 
 ## What this repo is
 
-Data feed for [Fraud Sonar](https://sonar.stingrayfraud.com/), a weekly feed
+Data feed for [Stingray Watch](https://watch.stingrayfraud.com/), a weekly feed
 of chargeback trends, fraud patterns, and marketplace fraud signals for
 Stingray Fraud Intelligence. Read `README.md` in this repo now for the full
 schema — it's the source of truth, more detailed than this file, and may
@@ -104,8 +104,8 @@ have evolved since this file was written. Do not proceed until you've read it.
 
 8. **Verify the push landed correctly:**
    ```bash
-   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/fraud-sonar-data/main/feed.json | python3 -m json.tool > /dev/null && echo "feed.json OK"
-   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/fraud-sonar-data/main/archive.json | python3 -m json.tool > /dev/null && echo "archive.json OK"
+   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/stingray-watch-data/main/feed.json | python3 -m json.tool > /dev/null && echo "feed.json OK"
+   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/stingray-watch-data/main/archive.json | python3 -m json.tool > /dev/null && echo "archive.json OK"
    ```
    Note: the raw URL is served through a CDN and may take a minute or two
    to reflect a fresh push — don't treat a stale response as failure if the
@@ -113,8 +113,8 @@ have evolved since this file was written. Do not proceed until you've read it.
 
 9. **Email a run summary to `jared@stingrayfraud.com`** using the Gmail
    tool, every run, regardless of outcome. Subject line should make the
-   outcome scannable at a glance, e.g. `Fraud Sonar weekly refresh: 3 items
-   added` or `Fraud Sonar weekly refresh: 0 items added` or `Fraud Sonar
+   outcome scannable at a glance, e.g. `Stingray Watch weekly refresh: 3 items
+   added` or `Stingray Watch weekly refresh: 0 items added` or `Stingray Watch
    weekly refresh: FAILED at step N`. Body should include:
    - What was added: for each new item, its tag, one-line text, source
      link, and which panel (ticker/marketplace/highrisk).

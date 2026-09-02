@@ -1,6 +1,6 @@
-# fraud-sonar-data
+# stingray-watch-data
 
-Data feed for the [Fraud Sonar](https://sonar.stingrayfraud.com/) site: the industry-signal ticker, the marketplace-watch panel, and the high-risk-items panel.
+Data feed for the [Stingray Watch](https://watch.stingrayfraud.com/) site: the industry-signal ticker, the marketplace-watch panel, and the high-risk-items panel.
 
 `feed.json` is fetched client-side by the Carrd embed at page load — updating this file updates the live site with no need to touch or republish Carrd.
 
@@ -57,7 +57,7 @@ When a story is genuinely both (e.g., a marketplace changes its policy specifica
 ## Raw URL (for the Carrd embed's fetch)
 
 ```
-https://raw.githubusercontent.com/<owner>/fraud-sonar-data/main/feed.json
+https://raw.githubusercontent.com/<owner>/stingray-watch-data/main/feed.json
 ```
 
 ## Updating
