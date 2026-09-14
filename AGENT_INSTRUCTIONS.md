@@ -1,10 +1,10 @@
 # Weekly refresh — agent instructions
 
-You are running unattended, on a schedule, with no human review before your
-changes go live on a public page (watch.stingrayfraud.com fetches
-`feed.json`/`archive.json` from this repo's `main` branch directly). Be
-conservative: when genuinely uncertain about a source's credibility or a
-claim's accuracy, skip it rather than include it.
+You are running unattended, on a schedule. Your changes reach the public
+page (watch.stingrayfraud.com fetches `feed.json`/`archive.json` from this
+repo's `main` branch directly) only after a one-click PR merge — see step 7.
+Be conservative regardless: when genuinely uncertain about a source's
+credibility or a claim's accuracy, skip it rather than include it.
 
 ## What this repo is
 
@@ -93,29 +93,40 @@ have evolved since this file was written. Do not proceed until you've read it.
      if nothing already in it is ever touched.
    - Validate: `python3 -m json.tool archive.json > /dev/null` must succeed.
 
-7. **Commit and push to `main`:**
+7. **Commit and open a PR into `main`:**
+   Your session runs on a dedicated branch and cannot push directly to
+   `main` — that's a fixed platform restriction on this environment, not an
+   error to work around. Don't attempt to force-push to `main`, merge it
+   yourself, or fight the restriction. Instead:
    ```bash
    git add feed.json archive.json
    git commit -m "Weekly fraud signal refresh: <n> new items (<short description>)"
-   git push
+   git push -u origin "$(git branch --show-current)"
+   gh pr create --base main \
+     --title "Weekly fraud signal refresh: <n> new items" \
+     --body "<one line per item added, tag + panel>"
    ```
-   Write a real, specific commit message — what was actually added, not
-   just "update feed."
+   Write a real, specific commit message and PR title — what was actually
+   added, not just "update feed." Capture the PR URL printed by
+   `gh pr create` — you need it for step 9, and it's the whole point of
+   this step: a merge Jared can do in one click instead of hunting for
+   what happened.
 
-8. **Verify the push landed correctly:**
+8. **Confirm the PR is clean:**
    ```bash
-   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/stingray-watch-data/main/feed.json | python3 -m json.tool > /dev/null && echo "feed.json OK"
-   curl -s https://raw.githubusercontent.com/kgpy6kgdkk-ai/stingray-watch-data/main/archive.json | python3 -m json.tool > /dev/null && echo "archive.json OK"
+   gh pr view --json mergeable,mergeStateStatus
    ```
-   Note: the raw URL is served through a CDN and may take a minute or two
-   to reflect a fresh push — don't treat a stale response as failure if the
-   push itself (`git log`, `git status`) confirms the commit landed.
+   Expect `"mergeable": "MERGEABLE"`. The live site will not reflect these
+   changes until the PR above is merged — that's expected at this stage,
+   not a failure. Don't treat an unmerged PR as something to fix; it's the
+   deliverable of this run.
 
 9. **Email a run summary to `jared@stingrayfraud.com`** using the Gmail
    tool, every run, regardless of outcome. Subject line should make the
    outcome scannable at a glance, e.g. `Stingray Watch weekly refresh: 3 items
    added` or `Stingray Watch weekly refresh: 0 items added` or `Stingray Watch
-   weekly refresh: FAILED at step N`. Body should include:
+   weekly refresh: FAILED at step N`. Body should lead with the PR link if
+   one was opened (`Merge to publish: <PR URL>`), then include:
    - What was added: for each new item, its tag, one-line text, source
      link, and which panel (ticker/marketplace/highrisk).
    - If fewer than 2 items were added (including zero), a short honest note
@@ -123,9 +134,8 @@ have evolved since this file was written. Do not proceed until you've read it.
      posted this month" or "no sources cleared the verification bar this
      week") — don't leave this unexplained.
    - Confirmation that `feed.json`/`archive.json` both validated as JSON
-     and the push succeeded, or the specific step/error if something failed.
-   - If any step failed partway (e.g. push succeeded but verification
-     couldn't confirm it), say so plainly rather than reporting success.
+     and the PR is mergeable, or the specific step/error if something failed.
+   - If any step failed partway, say so plainly rather than reporting success.
 
 ## What NOT to do
 
@@ -137,3 +147,6 @@ have evolved since this file was written. Do not proceed until you've read it.
 - If you end up with fewer than 2 well-sourced, non-duplicate items this
   run, it's fine to post fewer (even zero) — do not lower your bar just to
   hit a target count.
+- Don't attempt to push or merge directly to `main`, and don't treat the
+  branch restriction as something to route around. Open the PR (step 7)
+  and stop there — the merge is Jared's one click, by design.
