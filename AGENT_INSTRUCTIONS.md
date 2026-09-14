@@ -121,21 +121,60 @@ have evolved since this file was written. Do not proceed until you've read it.
    not a failure. Don't treat an unmerged PR as something to fix; it's the
    deliverable of this run.
 
-9. **Email a run summary to `jared@stingrayfraud.com`** using the Gmail
-   tool, every run, regardless of outcome. Subject line should make the
-   outcome scannable at a glance, e.g. `Stingray Watch weekly refresh: 3 items
-   added` or `Stingray Watch weekly refresh: 0 items added` or `Stingray Watch
-   weekly refresh: FAILED at step N`. Body should lead with the PR link if
-   one was opened (`Merge to publish: <PR URL>`), then include:
-   - What was added: for each new item, its tag, one-line text, source
-     link, and which panel (ticker/marketplace/highrisk).
-   - If fewer than 2 items were added (including zero), a short honest note
-     on why (e.g. "search returned mostly duplicates of items already
-     posted this month" or "no sources cleared the verification bar this
-     week") — don't leave this unexplained.
-   - Confirmation that `feed.json`/`archive.json` both validated as JSON
-     and the PR is mergeable, or the specific step/error if something failed.
-   - If any step failed partway, say so plainly rather than reporting success.
+9. **Build this week's shareable LinkedIn link.** Only if at least one item
+   was added this run — skip this step entirely on a zero-item run.
+   - Pick **one** item from this run's additions to feature: the single most
+     attention-grabbing one — a concrete incident, a notable name, or a
+     surprising number beats a generic trend stat. Prefer `highrisk` or
+     `ticker` items over `marketplace` mechanics, which tend to read drier.
+   - Build a UTM-tagged link to the site's homepage (not a deep link to the
+     specific item — the page's `og:url`/canonical tag is hardcoded to the
+     bare domain with no query string, which strips both query params *and*
+     hash anchors when link-preview crawlers like LinkedIn's read it, so a
+     deep-link anchor would silently break; the bare homepage + UTM is what
+     actually survives):
+     ```
+     https://watch.stingrayfraud.com/?utm_source=linkedin&utm_medium=social&utm_campaign=<slug>
+     ```
+     `<slug>` is a short, lowercase, hyphenated tag for the featured item's
+     topic (e.g. `repeat_counterfeiter`, `asos_ato_breach`) — distinct enough
+     that this week's link is identifiable from GA later, not identical to a
+     prior week's.
+   - Shorten it (LinkedIn's crawler otherwise reads the page's own `og:url`
+     and silently drops your query string — see above; a shortener sidesteps
+     this because there's nothing for LinkedIn to canonicalize away):
+     ```bash
+     curl -s "https://tinyurl.com/api-create.php?url=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "<the full utm url>")"
+     ```
+     No account or API key needed. Confirm it resolves correctly before
+     using it:
+     ```bash
+     curl -sI "<the tinyurl output>" | grep -i location
+     ```
+     The `location` header should echo your full UTM URL back exactly. If it
+     doesn't, don't guess — fall back to the plain (unshortened) UTM link in
+     the email and note the shortening step failed.
+
+10. **Email a run summary to `jared@stingrayfraud.com`** using the Gmail
+    tool, every run, regardless of outcome. Subject line should make the
+    outcome scannable at a glance, e.g. `Stingray Watch weekly refresh: 3 items
+    added` or `Stingray Watch weekly refresh: 0 items added` or `Stingray Watch
+    weekly refresh: FAILED at step N`. Body should lead with, in this order:
+    1. `Merge to publish: <PR URL>` (from step 7), if a PR was opened.
+    2. `This week's LinkedIn link: <shortened URL>` (from step 9), if one
+       was built — say one line on which item it features and why you
+       picked it.
+
+    Then include:
+    - What was added: for each new item, its tag, one-line text, source
+      link, and which panel (ticker/marketplace/highrisk).
+    - If fewer than 2 items were added (including zero), a short honest note
+      on why (e.g. "search returned mostly duplicates of items already
+      posted this month" or "no sources cleared the verification bar this
+      week") — don't leave this unexplained.
+    - Confirmation that `feed.json`/`archive.json` both validated as JSON
+      and the PR is mergeable, or the specific step/error if something failed.
+    - If any step failed partway, say so plainly rather than reporting success.
 
 ## What NOT to do
 
