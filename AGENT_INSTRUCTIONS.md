@@ -76,6 +76,9 @@ have evolved since this file was written. Do not proceed until you've read it.
    new taxonomy key if you're tagging an item to it right now, per the
    README's note about dead-end filter chips), `text`, `link`, `linkLabel`,
    `published` (ISO 8601 UTC, current timestamp).
+   **No em-dashes (—) in `text`.** The site already renders a separator
+   before each source link, and the Stingray voice doesn't use them. Use a
+   comma, colon, semicolon, or parentheses instead.
 
 5. **Update `feed.json`:**
    - Append new items to the appropriate array(s) (`ticker`/`marketplace`/`highrisk`).
