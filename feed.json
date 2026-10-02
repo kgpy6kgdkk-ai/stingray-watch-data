@@ -12,7 +12,7 @@
     "AGENTIC_AI": "agentic AI fraud",
     "STOLEN_PAYMENT": "stolen payment methods",
     "PROMO_ABUSE": "promo abuse",
-    "INDUSTRY_NEWS": "industry news"
+    "INDUSTRY_NEWS": "general news"
   },
   "ticker": [
     {"tag": "BBC", "vector": "SOCIAL_ENGINEERING", "text": "a BBC investigation found 45 TikTok accounts using AI-generated videos of injured veterans to sell cheap imported goods as handmade; one Wiltshire veteran paid £154.99 for a wooden flag that arrived as a printed plywood plaque shipped from China, and TikTok removed all 45 accounts once BBC flagged them", "link": "https://www.yahoo.com/news/world/articles/ai-pity-scams-fake-injured-215000731.html", "linkLabel": "yahoo.com", "published": "2026-10-01T14:00:00Z"},

@@ -62,7 +62,7 @@ have evolved since this file was written. Do not proceed until you've read it.
      underlying story or stat, even from a different source article) and
      skip anything covering the same specific fact already posted in the
      last ~14 days.
-   - Split selections between `ticker` (general industry signal),
+   - Split selections between `ticker` (the "industry news" panel: general industry signal),
      `marketplace` (two-sided marketplace **mechanics** — platform policy
      and platform-level fraud technique, not product category), and
      `highrisk` (fraud specific to a high-risk item category, regardless of
