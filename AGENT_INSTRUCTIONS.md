@@ -167,6 +167,10 @@ have evolved since this file was written. Do not proceed until you've read it.
     2. `This week's LinkedIn link: <shortened URL>` (from step 9), if one
        was built — say one line on which item it features and why you
        picked it.
+    3. If a PR was opened: `After merging, tell Claude Code: "refresh the
+       watch snapshot"`. This updates the static copy of the rows in the
+       Carrd embeds (what search engines and link previews see), which
+       doesn't update from the JSON on its own.
 
     Then include:
     - What was added: for each new item, its tag, one-line text, source
