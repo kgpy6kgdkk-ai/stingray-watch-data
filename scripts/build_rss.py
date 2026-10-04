@@ -72,7 +72,14 @@ def collect(feed, now):
     return out
 
 
-def item_xml(item, taxonomy, feed_slug):
+def pub_date(item, now):
+    # Never publish a date later than build time. Slack's RSS app (and some
+    # readers) only post items newer than the newest date they've seen, so one
+    # future-dated item would make them skip later refreshes' items.
+    return min(parse_date(item["published"]), now)
+
+
+def item_xml(item, taxonomy, feed_slug, now):
     # utm_content says which feed the click came from (rss, rss-marketplace, ...)
     link = "%s?%s&utm_content=%s#%s" % (WATCH_URL, UTM, feed_slug, item["_id"])
     vector = taxonomy.get(item.get("vector"), "")
@@ -88,7 +95,7 @@ def item_xml(item, taxonomy, feed_slug):
         "      <title>%s</title>" % escape(title_for(item)),
         "      <link>%s</link>" % escape(link),
         '      <guid isPermaLink="false">stingray-watch:%s</guid>' % escape(item["_id"]),
-        "      <pubDate>%s</pubDate>" % format_datetime(parse_date(item["published"])),
+        "      <pubDate>%s</pubDate>" % format_datetime(pub_date(item, now)),
         "".join("      <category>%s</category>\n" % escape(c) for c in cats).rstrip("\n"),
         "      <description><![CDATA[%s]]></description>" % body.replace("]]>", "]]&gt;"),
         "    </item>",
@@ -109,7 +116,7 @@ def channel_xml(title, description, filename, items, taxonomy, now):
         '    <atom:link href="%s%s" rel="self" type="application/rss+xml"/>' % (FEED_BASE, filename),
     ]
     feed_slug = filename.rsplit(".", 1)[0]
-    body = [item_xml(i, taxonomy, feed_slug) for i in items]
+    body = [item_xml(i, taxonomy, feed_slug, now) for i in items]
     return "\n".join(head + body + ["  </channel>", "</rss>", ""])
 
 

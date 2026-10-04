@@ -76,6 +76,13 @@ have evolved since this file was written. Do not proceed until you've read it.
    new taxonomy key if you're tagging an item to it right now, per the
    README's note about dead-end filter chips), `text`, `link`, `linkLabel`,
    `published` (ISO 8601 UTC, current timestamp).
+   **`published` must be the actual time of this run, never a future time.**
+   Get it from the clock (`date -u +%Y-%m-%dT%H:%M:%SZ`) and space items a
+   few seconds or minutes apart going backwards from it, never forwards.
+   The RSS feed (feed.stingrayfraud.com) is read by Slack's RSS app, which
+   only posts items newer than the newest date it has seen, so one
+   future-dated item silently hides the next refresh's items from every
+   subscribed channel.
    **No em-dashes (—) in `text`.** The site already renders a separator
    before each source link, and the Stingray voice doesn't use them. Use a
    comma, colon, semicolon, or parentheses instead.
@@ -86,6 +93,11 @@ have evolved since this file was written. Do not proceed until you've read it.
      any of the three arrays.
    - Re-sort each array by `published` descending.
    - Validate: `python3 -m json.tool feed.json > /dev/null` must succeed.
+   - Validate no future dates (must print nothing and exit 0):
+     ```bash
+     python3 -c "import json,sys,datetime as d;n=d.datetime.now(d.timezone.utc)+d.timedelta(minutes=5);bad=[i['published'] for k in ('ticker','marketplace','highrisk') for i in json.load(open('feed.json')).get(k,[]) if d.datetime.fromisoformat(i['published'].replace('Z','+00:00'))>n];print(bad) if bad else None;sys.exit(1 if bad else 0)"
+     ```
+     If it fails, fix those `published` values to the current time before continuing.
 
 6. **Update `archive.json`:**
    - Prepend the same new items (each with a `panel` field:
