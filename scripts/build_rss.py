@@ -25,6 +25,7 @@ WATCH_URL = "https://watch.stingrayfraud.com/"
 FEED_HOST = "feed.stingrayfraud.com"
 FEED_BASE = "https://" + FEED_HOST + "/"
 UTM = "utm_source=rss&utm_medium=rss&utm_campaign=watch_feed"
+GA_ID = "G-NXWMK36PSF"  # same GA4 stream as watch.stingrayfraud.com
 WINDOW_DAYS = 90
 
 # Same panel order the Watch page renders in; entry-id de-duplication depends on it.
@@ -71,8 +72,9 @@ def collect(feed, now):
     return out
 
 
-def item_xml(item, taxonomy):
-    link = "%s?%s#%s" % (WATCH_URL, UTM, item["_id"])
+def item_xml(item, taxonomy, feed_slug):
+    # utm_content says which feed the click came from (rss, rss-marketplace, ...)
+    link = "%s?%s&utm_content=%s#%s" % (WATCH_URL, UTM, feed_slug, item["_id"])
     vector = taxonomy.get(item.get("vector"), "")
     body = '<p>%s</p><p>source: <a href="%s">%s</a> &middot; %s</p>' % (
         escape(item.get("text", "")),
@@ -106,22 +108,48 @@ def channel_xml(title, description, filename, items, taxonomy, now):
         "    <ttl>720</ttl>",
         '    <atom:link href="%s%s" rel="self" type="application/rss+xml"/>' % (FEED_BASE, filename),
     ]
-    body = [item_xml(i, taxonomy) for i in items]
+    feed_slug = filename.rsplit(".", 1)[0]
+    body = [item_xml(i, taxonomy, feed_slug) for i in items]
     return "\n".join(head + body + ["  </channel>", "</rss>", ""])
 
 
 INDEX_HTML = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stingray Watch RSS feeds</title>
+<link rel="alternate" type="application/rss+xml" title="Stingray Watch" href="rss.xml">
+<script async src="https://www.googletagmanager.com/gtag/js?id={ga}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga}');</script>
 <style>body{{margin:0;background:#000;color:#E1F5EE;font:14px/1.6 ui-monospace,monospace;padding:32px 16px}}
-main{{max-width:640px;margin:0 auto}}h1{{color:#39FF14;font-weight:500;font-size:22px}}a{{color:#4FB37A}}li{{margin:6px 0}}</style>
+main{{max-width:640px;margin:0 auto}}h1{{color:#39FF14;font-weight:500;font-size:22px}}a{{color:#4FB37A}}
+li{{margin:10px 0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}}
+button{{font:inherit;font-size:12px;color:#39FF14;background:transparent;border:1px solid #145C3C;border-radius:4px;padding:4px 10px;cursor:pointer}}
+.tip{{color:#8FBFA6;font-size:12px}}</style>
 </head><body><main>
 <h1>stingray watch rss</h1>
-<p>chargeback trends, fraud patterns, and industry news from <a href="{watch}">stingray watch</a>, updated twice a week. paste a feed url into your reader, or into slack's rss app to post new items to a channel.</p>
+<p>chargeback trends, fraud patterns, and industry news from <a href="{watch}?utm_source=rss_landing&amp;utm_medium=referral" data-ga="rss_landing_to_watch">stingray watch</a>, updated twice a week. paste a feed url into your reader, or into slack's rss app to post new items to a channel.</p>
 <ul>
 {links}
 </ul>
-</main></body></html>
+<p class="tip">slack: <code>/feed subscribe https://{host}/rss.xml</code> in any channel with the rss app installed.</p>
+</main>
+<script>
+(function(){{
+  function ev(name,params){{if(typeof gtag==='function')gtag('event',name,params||{{}});}}
+  document.querySelectorAll('a[data-feed]').forEach(function(a){{
+    a.addEventListener('click',function(){{ev('rss_feed_open',{{feed:a.getAttribute('data-feed')}});}});
+  }});
+  document.querySelectorAll('button[data-copy]').forEach(function(b){{
+    b.addEventListener('click',function(){{
+      var url=b.getAttribute('data-copy'),feed=b.getAttribute('data-feed');
+      function done(){{b.textContent='copied';setTimeout(function(){{b.textContent='copy url';}},1500);ev('rss_feed_copy',{{feed:feed}});}}
+      if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(url).then(done,done);}}else{{done();}}
+    }});
+  }});
+  var w=document.querySelector('a[data-ga="rss_landing_to_watch"]');
+  if(w)w.addEventListener('click',function(){{ev('rss_landing_to_watch');}});
+}})();
+</script>
+</body></html>
 """
 
 
@@ -144,10 +172,13 @@ def main():
     for filename, title, label, its in feeds:
         desc = "Chargeback trends, fraud patterns, and e-commerce fraud signals (%s), sourced and updated twice a week." % label
         (out_dir / filename).write_text(channel_xml(title, desc, filename, its, taxonomy, now), encoding="utf-8")
-        links.append('<li><a href="%s">%s</a> (%s, %d items)</li>' % (filename, filename, label, len(its)))
+        slug = filename.rsplit(".", 1)[0]
+        links.append('<li><a href="%s" data-feed="%s">%s</a> <span>(%s, %d items)</span> '
+                     '<button type="button" data-feed="%s" data-copy="%s%s">copy url</button></li>'
+                     % (filename, slug, filename, label, len(its), slug, FEED_BASE, filename))
         print("%s: %d items" % (filename, len(its)))
 
-    (out_dir / "index.html").write_text(INDEX_HTML.format(watch=WATCH_URL, links="\n".join(links)), encoding="utf-8")
+    (out_dir / "index.html").write_text(INDEX_HTML.format(watch=WATCH_URL, ga=GA_ID, host=FEED_HOST, links="\n".join(links)), encoding="utf-8")
     (out_dir / "CNAME").write_text(FEED_HOST + "\n", encoding="utf-8")
 
 
