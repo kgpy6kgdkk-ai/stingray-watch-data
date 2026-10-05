@@ -30,7 +30,9 @@ have evolved since this file was written. Do not proceed until you've read it.
    **Also search the high-risk item categories specifically** (this feeds
    the `highrisk` panel — see README for what qualifies): sneakers,
    streetwear, TCG/Pokémon and sports cards, bullion (gold/silver/precious
-   metals), electronics (phones, laptops), designer bags. Query angles:
+   metals), electronics (phones, laptops, GPUs, gaming consoles), designer
+   bags, luxury watches, gift cards, event tickets, and designer
+   toys/collectibles (Labubu/Pop Mart, LEGO). Query angles:
    "[category] counterfeit fraud", "[category] resale scam", "[category]
    authentication fraud". Don't force it — if a category has no
    well-sourced news this week, skip it rather than stretch a weak source
