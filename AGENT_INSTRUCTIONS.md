@@ -93,6 +93,13 @@ have evolved since this file was written. Do not proceed until you've read it.
    - Append new items to the appropriate array(s) (`ticker`/`marketplace`/`highrisk`).
    - Prune any item whose `published` is more than 90 days before now, from
      any of the three arrays.
+   - **Set the top-level `featured` key** to the exact `link` of this run's
+     featured item, chosen by step 9's rule (the single most
+     attention-grabbing addition; prefer `highrisk` or `ticker`). Replace
+     any previous value. The site's `this_week.sh` strip shows it as
+     "biggest story", and step 9 uses the same item for the LinkedIn link.
+     On a zero-item run, leave `featured` unchanged, even if the item it
+     points to was just pruned: the site falls back on its own.
    - Re-sort each array by `published` descending.
    - Validate: `python3 -m json.tool feed.json > /dev/null` must succeed.
    - Validate no future dates (must print nothing and exit 0):
@@ -144,6 +151,7 @@ have evolved since this file was written. Do not proceed until you've read it.
      attention-grabbing one — a concrete incident, a notable name, or a
      surprising number beats a generic trend stat. Prefer `highrisk` or
      `ticker` items over `marketplace` mechanics, which tend to read drier.
+   - This must be the same item you set as `featured` in step 5.
    - Build a UTM-tagged link to the site's homepage (not a deep link to the
      specific item — the page's `og:url`/canonical tag is hardcoded to the
      bare domain with no query string, which strips both query params *and*

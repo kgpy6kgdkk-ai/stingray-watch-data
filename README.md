@@ -25,6 +25,7 @@ Data feed for the [Stingray Watch](https://watch.stingrayfraud.com/) site: the i
     "PROMO_ABUSE": "promo abuse",
     "INDUSTRY_NEWS": "industry news"
   },
+  "featured": "https://...",     // optional: the `link` of this week's lead item (see "Featured story" below)
   "ticker": [
     {
       "tag": "SIGNIFYD",           // shown as [TAG]
@@ -39,6 +40,10 @@ Data feed for the [Stingray Watch](https://watch.stingrayfraud.com/) site: the i
   "highrisk": [ /* same shape, rendered in the high_risk_items.sh panel */ ]
 }
 ```
+
+### Featured story
+
+`featured` is an optional top-level string holding the exact `link` of one item currently in `ticker`, `marketplace` or `highrisk`. The site's `this_week.sh` summary strip shows that item as "biggest story". If `featured` is missing, or matches no live item (for example, because the item was pruned), the strip falls back to the newest `highrisk` item, then the newest item overall. Every refresh that adds items sets it (AGENT_INSTRUCTIONS.md step 5). On the Sunday run it matches the item featured in the LinkedIn link; the Wednesday run, which builds no LinkedIn link, still updates it so the strip leads with that run's best story.
 
 ### Fraud vectors
 

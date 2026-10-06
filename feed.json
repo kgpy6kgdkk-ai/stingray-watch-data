@@ -14,6 +14,7 @@
     "PROMO_ABUSE": "promo abuse",
     "INDUSTRY_NEWS": "general news"
   },
+  "featured": "https://resellcalendar.com/news/news/psa-vault-fake-one-piece-card-reseller-details/",
   "ticker": [
     {"tag": "PYMNTS", "vector": "SOCIAL_ENGINEERING", "text": "Operation Shamrock founder Erin West argues pig butchering scams run as a supply chain, not isolated crimes; PYMNTS cites an Arizona man who lost $4.5 million to an investment scam, and finds victims who report to their bank are twice as likely to get all of their money back (42%) as those who go through police or federal channels (20%)", "link": "https://www.pymnts.com/cybersecurity/fraud-prevention/2026/the-fraud-economy-has-a-supply-chain-and-erin-west-is-going-after-it/", "linkLabel": "pymnts.com", "published": "2026-10-05T02:47:00Z"},
     {"tag": "CHARGEBACKS911", "vector": "CHARGEBACK_DISPUTE", "text": "a third of merchants don't know whether Visa's Acquirer Monitoring Program (VAMP) affects them, and 20% admit they don't track their own TC40 fraud data, even though April's final rollout phase set acquirer penalties of $4 to $8 per card-not-present fraud report or dispute, with the top $8 tier hitting portfolios at a 0.7% or higher fraud and dispute ratio", "link": "https://chargebacks911.com/vamp-acquirer-data/", "linkLabel": "chargebacks911.com", "published": "2026-10-05T02:42:00Z"},
