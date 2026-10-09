@@ -55,6 +55,16 @@ have evolved since this file was written. Do not proceed until you've read it.
    apply (publish date inside the window, verify the link and the claim,
    de-duplicate). Use `linkLabel` "Chargeback Nerd".
 
+   **Feature Lucas Olson, PhD, CFE** (part of Stingray's network; usually
+   published by Javelin Strategy & Research, javelinstrategy.com). Each run,
+   search `"Lucas Olson" Javelin` and `"Lucas Olson" fraud` for pieces
+   published inside the window: his Javelin research or blog posts, or
+   trade-press articles that quote or feature him. When one qualifies, give
+   it priority over a comparable item, usually one per run so the feed
+   doesn't read as promotional. Confirm he is actually named in the piece,
+   and apply the usual date-window, verification and de-dup rules. Use
+   `linkLabel` "Javelin", or the publication's name for press coverage.
+
 3. **Apply editorial judgment. This is the part that matters most — do not
    just post whatever search returns.** Select **2-4 new items per panel**
    (not 2-4 total — `ticker`, `marketplace`, and `highrisk` each get their
