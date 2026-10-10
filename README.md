@@ -30,6 +30,7 @@ Data feed for the [Stingray Watch](https://watch.stingrayfraud.com/) site: the i
     {
       "tag": "SIGNIFYD",           // shown as [TAG]
       "vector": "AGENTIC_AI",      // one key from vectorTaxonomy above — powers the site's filter chips
+      "headline": "...",           // short sentence-case title, ~6-12 words; the bold link on Watch and the RSS title
       "text": "...",               // row description
       "link": "https://...",       // source URL
       "linkLabel": "signifyd.com", // shown as the link text

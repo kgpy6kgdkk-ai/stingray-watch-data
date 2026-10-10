@@ -103,8 +103,14 @@ have evolved since this file was written. Do not proceed until you've read it.
 4. **Format each selected item** per `README.md`'s schema: `tag`, `vector`
    (must be an existing key in `vectorTaxonomy` in `feed.json` — only add a
    new taxonomy key if you're tagging an item to it right now, per the
-   README's note about dead-end filter chips), `text`, `link`, `linkLabel`,
-   `published` (ISO 8601 UTC, current timestamp).
+   README's note about dead-end filter chips), `headline`, `text`, `link`,
+   `linkLabel`, `published` (ISO 8601 UTC, current timestamp).
+   **Every item needs a `headline`:** sentence case, about 6-12 words, the
+   one fact a fraud analyst would want from a glance (a number, who, what
+   changed). It is the bold link readers scan on Watch and the RSS title,
+   so it must stand on its own. Use only facts that are in `text` and the
+   source; no em-dashes; no clickbait or questions. `text` stays the
+   longer lowercase summary underneath it.
    **`published` must be the actual time of this run, never a future time.**
    Get it from the clock (`date -u +%Y-%m-%dT%H:%M:%SZ`) and space items a
    few seconds or minutes apart going backwards from it, never forwards.

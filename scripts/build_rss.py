@@ -46,6 +46,9 @@ def slug(s):
 
 
 def title_for(item, limit=90):
+    headline = " ".join(str(item.get("headline", "")).split())
+    if headline:
+        return "[%s] %s" % (item.get("tag", ""), headline)
     text = " ".join(str(item.get("text", "")).split())
     if len(text) > limit:
         cut = text[:limit].rsplit(" ", 1)[0]
