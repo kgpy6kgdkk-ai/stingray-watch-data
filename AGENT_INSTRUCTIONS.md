@@ -43,6 +43,33 @@ have evolved since this file was written. Do not proceed until you've read it.
    search `site:frankonfraud.com` for the topic angles above, or fetch the
    site directly, to see what's been posted in the last 1-2 weeks.
 
+   **Occasionally use Chargeback Nerd** (chargebacknerd.substack.com,
+   weekly Monday posts; RSS feed at `/feed`). It's part of Stingray's
+   network. Fetch the feed each run and include a post **only** when it
+   carries news: a card-network rule change (e.g. Mastercard bringing back
+   GMAP), new dispute data, or a dated trend. Skip evergreen advice posts
+   and the "History of Payment Disputes" series. Limits: at most one
+   Chargeback Nerd item per run, never in place of a stronger item, and
+   none at all if `feed.json` already has an item with `linkLabel`
+   "Chargeback Nerd" published in the last ~14 days. All the usual rules
+   apply (publish date inside the window, verify the link and the claim,
+   de-duplicate). Use `linkLabel` "Chargeback Nerd".
+
+   **Feature Lucas Olson, PhD, CFE** (part of Stingray's network; usually
+   published by Javelin Strategy & Research, javelinstrategy.com). He most
+   often appears on **PaymentsJournal** (paymentsjournal.com, Javelin's
+   media outlet) as the quoted expert in articles by other writers, e.g.
+   "Synthetic Identity Fraud Is Surging—and Often Goes Unnoticed" (Oct 9,
+   2026). Each run, search `site:paymentsjournal.com "Lucas Olson"`,
+   `"Lucas Olson" Javelin` and `"Lucas Olson" fraud` for pieces published
+   inside the window: PaymentsJournal articles, his Javelin research or
+   blog posts, or other trade press that quotes or features him. When one qualifies, give
+   it priority over a comparable item, usually one per run so the feed
+   doesn't read as promotional. Confirm he is actually named in the piece,
+   and apply the usual date-window, verification and de-dup rules. Use
+   `linkLabel` "PaymentsJournal" for PaymentsJournal pieces, "Javelin" for
+   Javelin's own site, or the publication's name for other press.
+
 3. **Apply editorial judgment. This is the part that matters most — do not
    just post whatever search returns.** Select **2-4 new items per panel**
    (not 2-4 total — `ticker`, `marketplace`, and `highrisk` each get their
