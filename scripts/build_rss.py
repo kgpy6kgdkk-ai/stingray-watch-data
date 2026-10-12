@@ -9,6 +9,7 @@ Writes to the output directory (default: _site):
   index.html                small landing page listing the feeds
   go/<feed>/<id>.html       per-item redirect pages that item links point at
   CNAME                     custom domain for GitHub Pages
+  icon.svg, icon-*.png      site icon, copied from assets/ (RSS <image>, favicon)
 
 Item links point at a tiny redirect page on feed.stingrayfraud.com that sends
 the reader on to the item's deep link on watch.stingrayfraud.com, using the
@@ -19,6 +20,7 @@ library only, no dependencies.
 """
 import json
 import re
+import shutil
 import sys
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
@@ -142,6 +144,13 @@ def channel_xml(title, description, filename, items, taxonomy, now):
         "    <lastBuildDate>%s</lastBuildDate>" % format_datetime(now),
         "    <ttl>720</ttl>",
         '    <atom:link href="%s%s" rel="self" type="application/rss+xml"/>' % (FEED_BASE, filename),
+        "    <image>",
+        "      <url>%sicon-144.png</url>" % FEED_BASE,
+        "      <title>%s</title>" % escape(title),
+        "      <link>%s</link>" % WATCH_URL,
+        "      <width>144</width>",
+        "      <height>144</height>",
+        "    </image>",
     ]
     feed_slug = filename.rsplit(".", 1)[0]
     body = [item_xml(i, taxonomy, feed_slug, now) for i in items]
@@ -151,6 +160,9 @@ def channel_xml(title, description, filename, items, taxonomy, now):
 INDEX_HTML = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stingray Watch RSS feeds</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="Stingray Watch" href="rss.xml">
 <script async src="https://www.googletagmanager.com/gtag/js?id={ga}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga}');</script>
@@ -220,6 +232,8 @@ def main():
 
     (out_dir / "index.html").write_text(INDEX_HTML.format(watch=WATCH_URL, ga=GA_ID, host=FEED_HOST, links="\n".join(links)), encoding="utf-8")
     (out_dir / "CNAME").write_text(FEED_HOST + "\n", encoding="utf-8")
+    for f in (repo / "assets").glob("*"):
+        shutil.copy(f, out_dir / f.name)
 
 
 if __name__ == "__main__":
