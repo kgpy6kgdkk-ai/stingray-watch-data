@@ -6,6 +6,8 @@ Writes to the output directory (default: _site):
   rss-industry-news.xml     ticker panel only
   rss-marketplace.xml       marketplace panel only
   rss-high-risk-items.xml   highrisk panel only
+  rss-collectibles.xml      collectibles & live commerce: every highrisk item, plus
+                            auction-abuse and counterfeit items from any panel
   index.html                small landing page listing the feeds
   go/<feed>/<id>.html       per-item redirect pages that item links point at
   CNAME                     custom domain for GitHub Pages
@@ -39,6 +41,15 @@ PANELS = [
     ("ticker", "industry news", "rss-industry-news.xml"),
     ("marketplace", "marketplace", "rss-marketplace.xml"),
     ("highrisk", "high-risk items", "rss-high-risk-items.xml"),
+]
+
+# Cross-panel feeds, built from items already in the panels above (nothing moves
+# panels). Collectibles & live commerce is the feed for live-shopping and resale
+# marketplace trust & safety teams: the goods fraudsters target plus the
+# platform abuse around selling them.
+CROSS_FEEDS = [
+    ("collectibles & live commerce", "rss-collectibles.xml",
+     lambda i: i["_panel"] == "highrisk" or i.get("vector") in ("AUCTION_ABUSE", "COUNTERFEIT")),
 ]
 
 
@@ -214,6 +225,9 @@ def main():
     for key, label, filename in PANELS:
         feeds.append((filename, "Stingray Watch: " + label, label,
                       [i for i in newest_first if i["_panel"] == key]))
+    for label, filename, keep in CROSS_FEEDS:
+        feeds.append((filename, "Stingray Watch: " + label, label,
+                      [i for i in newest_first if keep(i)]))
 
     links = []
     for filename, title, label, its in feeds:
