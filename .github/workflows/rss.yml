@@ -3,7 +3,7 @@ name: Build RSS feed
 on:
   push:
     branches: [main]
-    paths: [feed.json, scripts/build_rss.py, .github/workflows/rss.yml]
+    paths: [feed.json, scripts/build_rss.py, .github/workflows/rss.yml, assets/**]
   schedule:
     # Daily rebuild so items age out of the 90-day window even without a merge.
     - cron: "17 12 * * *"
