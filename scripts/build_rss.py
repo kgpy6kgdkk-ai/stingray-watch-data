@@ -7,11 +7,15 @@ Writes to the output directory (default: _site):
   rss-marketplace.xml       marketplace panel only
   rss-high-risk-items.xml   highrisk panel only
   index.html                small landing page listing the feeds
+  go/<feed>/<id>.html       per-item redirect pages that item links point at
   CNAME                     custom domain for GitHub Pages
 
-Item links point at the item's deep link on watch.stingrayfraud.com, using the
+Item links point at a tiny redirect page on feed.stingrayfraud.com that sends
+the reader on to the item's deep link on watch.stingrayfraud.com, using the
 same entry-id rule as the Watch page (fsEntryId), so the page scrolls to and
-highlights the item. Standard library only, no dependencies.
+highlights the item. The redirect page has no title or preview tags, so Slack
+doesn't unfurl Watch's large share image under every posted item. Standard
+library only, no dependencies.
 """
 import json
 import re
@@ -82,11 +86,32 @@ def pub_date(item, now):
     return min(parse_date(item["published"]), now)
 
 
-def item_xml(item, taxonomy, feed_slug, now):
+def watch_link(item, feed_slug):
     # utm_content says which feed the click came from (rss, rss-marketplace, ...)
-    link = "%s?%s&utm_content=%s#%s" % (WATCH_URL, UTM, feed_slug, item["_id"])
+    return "%s?%s&utm_content=%s#%s" % (WATCH_URL, UTM, feed_slug, item["_id"])
+
+
+def go_path(item, feed_slug):
+    return "go/%s/%s.html" % (feed_slug, item["_id"])
+
+
+# Deliberately no <title>, description or og/twitter tags: with nothing to
+# preview, Slack's RSS app posts the item without a big link unfurl.
+GO_HTML = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url={url}">
+<script>location.replace({js});</script>
+</head><body><a href="{url}">continue to stingray watch</a></body></html>
+"""
+
+
+def item_xml(item, taxonomy, feed_slug, now):
+    link = FEED_BASE + go_path(item, feed_slug)
     vector = taxonomy.get(item.get("vector"), "")
-    body = '<p>%s</p><p>source: <a href="%s">%s</a> &middot; %s</p>' % (
+    # One paragraph: Slack drops paragraph breaks, which glued the summary's
+    # last word onto "source:".
+    body = '<p>%s &middot; source: <a href="%s">%s</a> &middot; %s</p>' % (
         escape(item.get("text", "")),
         escape(item.get("link", ""), {'"': "&quot;"}),
         escape(item.get("linkLabel", "") or "source"),
@@ -187,6 +212,11 @@ def main():
                      '<button type="button" data-feed="%s" data-copy="%s%s">copy url</button></li>'
                      % (filename, slug, filename, label, len(its), slug, FEED_BASE, filename))
         print("%s: %d items" % (filename, len(its)))
+        for i in its:
+            url = watch_link(i, slug)
+            page = out_dir / go_path(i, slug)
+            page.parent.mkdir(parents=True, exist_ok=True)
+            page.write_text(GO_HTML.format(url=escape(url, {'"': "&quot;"}), js=json.dumps(url)), encoding="utf-8")
 
     (out_dir / "index.html").write_text(INDEX_HTML.format(watch=WATCH_URL, ga=GA_ID, host=FEED_HOST, links="\n".join(links)), encoding="utf-8")
     (out_dir / "CNAME").write_text(FEED_HOST + "\n", encoding="utf-8")
