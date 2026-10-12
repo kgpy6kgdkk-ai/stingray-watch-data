@@ -121,6 +121,29 @@ have evolved since this file was written. Do not proceed until you've read it.
    **No em-dashes (—) in `text`.** The site already renders a separator
    before each source link, and the Stingray voice doesn't use them. Use a
    comma, colon, semicolon, or parentheses instead.
+   **Write `headline` and `text` in the Stingray voice** (from the
+   `stingray-brand` skill). Picture an experienced fraud analyst telling a
+   teammate what happened: calm, plain, specific, a little wry. Still a
+   summary of the story, not commentary or a "why it matters" take.
+   - Lead with the concrete fact (the number, who, what changed), then
+     the detail an analyst would act on. Short sentences; one strong
+     detail beats three soft ones.
+   - Use the words analysts use: pattern, case, ring, playbook,
+     chargeback, dispute, bust-out. Say "fraud analyst" or "investigator",
+     never "fraud professional", "user" or "stakeholder".
+   - No vendor words: AI-powered, next-gen, revolutionary,
+     cutting-edge, end-to-end, holistic, game-changing, leverage,
+     robust, "in today's landscape".
+   - No war or military framing (war room, trenches, battle, fight,
+     front line, arsenal, weapon, troops). Describing what fraudsters do
+     ("an attack", "a ring was busted") is fine.
+   - No hype, alarm or clickbait ("shocking", "you won't believe",
+     "everything you need to know"), no questions, and no exclamation
+     points.
+   - Don't talk down to fraud teams or imply they're doing it wrong.
+   - Never mention Stingray, pitch anything, or add advice that isn't in
+     the source. The voice lives in how the facts are said, not in extra
+     claims. Every number, name and date must come from the source.
 
 5. **Update `feed.json`:**
    - Append new items to the appropriate array(s) (`ticker`/`marketplace`/`highrisk`).
