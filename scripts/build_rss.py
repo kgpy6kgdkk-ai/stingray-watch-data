@@ -5,9 +5,10 @@ Writes to the output directory (default: _site):
   rss.xml                   every item in the 90-day window
   rss-industry-news.xml     ticker panel only
   rss-marketplace.xml       marketplace panel only
-  rss-high-risk-items.xml   highrisk panel only
-  rss-collectibles.xml      collectibles & live commerce: every highrisk item, plus
-                            auction-abuse and counterfeit items from any panel
+  rss-high-risk-items.xml   highrisk panel, plus auction-abuse and counterfeit
+                            items from the other panels
+  rss-collectibles.xml      same items as rss-high-risk-items.xml (kept so the
+                            briefly published URL keeps working; not listed)
   index.html                small landing page listing the feeds
   go/<feed>/<id>.html       per-item redirect pages that item links point at
   CNAME                     custom domain for GitHub Pages
@@ -43,14 +44,23 @@ PANELS = [
     ("highrisk", "high-risk items", "rss-high-risk-items.xml"),
 ]
 
-# Cross-panel feeds, built from items already in the panels above (nothing moves
-# panels). Collectibles & live commerce is the feed for live-shopping and resale
-# marketplace trust & safety teams: the goods fraudsters target plus the
-# platform abuse around selling them.
-CROSS_FEEDS = [
-    ("collectibles & live commerce", "rss-collectibles.xml",
-     lambda i: i["_panel"] == "highrisk" or i.get("vector") in ("AUCTION_ABUSE", "COUNTERFEIT")),
-]
+# The high-risk feed also carries auction-abuse and counterfeit items from the
+# other panels (e.g. shill bidding, marketplace fakes), so resale and
+# live-shopping trust & safety teams get both from one feed. Items still render
+# in their own panel on Watch; only the feed widens.
+HIGHRISK_EXTRA_VECTORS = ("AUCTION_ABUSE", "COUNTERFEIT")
+
+
+def in_feed(item, key):
+    if item["_panel"] == key:
+        return True
+    return key == "highrisk" and item.get("vector") in HIGHRISK_EXTRA_VECTORS
+
+
+# Aliases: (filename, panel key) built like that panel's feed but not listed on
+# the landing page. rss-collectibles.xml was a separate feed for about an hour
+# on 2026-10-12 before being folded into the high-risk feed.
+ALIASES = [("rss-collectibles.xml", "highrisk")]
 
 
 def parse_date(iso):
@@ -221,22 +231,24 @@ def main():
     items = collect(feed, now)
     newest_first = sorted(items, key=lambda i: parse_date(i["published"]), reverse=True)
 
-    feeds = [("rss.xml", "Stingray Watch", "all panels", newest_first)]
+    feeds = [("rss.xml", "Stingray Watch", "all panels", newest_first, True)]
     for key, label, filename in PANELS:
         feeds.append((filename, "Stingray Watch: " + label, label,
-                      [i for i in newest_first if i["_panel"] == key]))
-    for label, filename, keep in CROSS_FEEDS:
-        feeds.append((filename, "Stingray Watch: " + label, label,
-                      [i for i in newest_first if keep(i)]))
+                      [i for i in newest_first if in_feed(i, key)], True))
+    labels = {key: label for key, label, _ in PANELS}
+    for filename, key in ALIASES:
+        feeds.append((filename, "Stingray Watch: " + labels[key], labels[key],
+                      [i for i in newest_first if in_feed(i, key)], False))
 
     links = []
-    for filename, title, label, its in feeds:
+    for filename, title, label, its, listed in feeds:
         desc = "Chargeback trends, fraud patterns, and e-commerce fraud signals (%s), sourced and updated twice a week." % label
         (out_dir / filename).write_text(channel_xml(title, desc, filename, its, taxonomy, now), encoding="utf-8")
         slug = filename.rsplit(".", 1)[0]
-        links.append('<li><a href="%s" data-feed="%s">%s</a> <span>(%s, %d items)</span> '
-                     '<button type="button" data-feed="%s" data-copy="%s%s">copy url</button></li>'
-                     % (filename, slug, filename, label, len(its), slug, FEED_BASE, filename))
+        if listed:
+            links.append('<li><a href="%s" data-feed="%s">%s</a> <span>(%s, %d items)</span> '
+                         '<button type="button" data-feed="%s" data-copy="%s%s">copy url</button></li>'
+                         % (filename, slug, filename, label, len(its), slug, FEED_BASE, filename))
         print("%s: %d items" % (filename, len(its)))
         for i in its:
             url = watch_link(i, slug)
