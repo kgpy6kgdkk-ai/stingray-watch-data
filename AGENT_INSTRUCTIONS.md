@@ -91,6 +91,14 @@ have evolved since this file was written. Do not proceed until you've read it.
      underlying story or stat, even from a different source article) and
      skip anything covering the same specific fact already posted in the
      last ~14 days.
+     A single new case, arrest or enforcement action that's part of an
+     ongoing story or crackdown already in the feed counts as a
+     near-duplicate too, even when the source, numbers and people are
+     different (e.g. one scalper's conviction when the feed already covers
+     South Korea's scalping-law crackdown). Only include it if it adds a
+     genuinely new angle for analysts, such as a new fraud technique or a
+     new type of platform involved, not just another example of the same
+     pattern.
    - Split selections between `ticker` (the "industry news" panel: general industry signal),
      `marketplace` (two-sided marketplace **mechanics** — platform policy
      and platform-level fraud technique, not product category), and
