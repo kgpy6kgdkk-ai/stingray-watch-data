@@ -55,6 +55,21 @@ have evolved since this file was written. Do not proceed until you've read it.
    apply (publish date inside the window, verify the link and the claim,
    de-duplicate). Use `linkLabel` "Chargeback Nerd".
 
+   **Occasionally use Vito Petruzzelli** (vit0petruzzell1.substack.com,
+   his "vito" newsletter; RSS feed at `/feed`). He writes original fraud
+   investigations with first-hand evidence, e.g. "EXCLUSIVE: The Extra 'E'"
+   (Oct 19, 2026), which traced aceehardware[.]com to a ring of lookalike
+   storefronts sharing one card-check backend. Fetch the feed each run and
+   include a post **only** when it is an investigation or a dated pattern
+   backed by evidence he shows (domains, infrastructure, checkout flows,
+   numbers). Skip opinion and general advice posts. Limits: at most one
+   item from him per run, never in place of a stronger item, and none at
+   all if `feed.json` already has an item with `linkLabel` "Vito
+   Petruzzelli" published in the last ~14 days. All the usual rules apply
+   (publish date inside the window, verify the link and the claim, state
+   only what the post shows, de-duplicate). Use `linkLabel` "Vito
+   Petruzzelli".
+
    **Feature Lucas Olson, PhD, CFE** (part of Stingray's network; usually
    published by Javelin Strategy & Research, javelinstrategy.com). He most
    often appears on **PaymentsJournal** (paymentsjournal.com, Javelin's
