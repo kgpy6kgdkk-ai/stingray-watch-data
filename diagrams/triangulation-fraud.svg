@@ -1,0 +1,14 @@
+<svg viewBox="0 0 620 300" role="img" aria-label="The fraudster sells to a buyer on a marketplace, buys the same item from a retailer with a stolen card, and the retailer ships to the buyer. The cardholder later disputes the charge with the retailer.">
+  <g class="node bad"><rect x="235" y="14" width="150" height="54" rx="6"/><text x="310" y="38" text-anchor="middle">fraudster</text><text class="sub" x="310" y="55" text-anchor="middle">marketplace seller</text></g>
+  <g class="node"><rect x="20" y="210" width="150" height="54" rx="6"/><text x="95" y="234" text-anchor="middle">buyer</text><text class="sub" x="95" y="251" text-anchor="middle">pays a real price</text></g>
+  <g class="node"><rect x="450" y="210" width="150" height="54" rx="6"/><text x="525" y="234" text-anchor="middle">retailer</text><text class="sub" x="525" y="251" text-anchor="middle">ships real goods</text></g>
+  <g class="node"><rect x="450" y="104" width="150" height="46" rx="6"/><text x="525" y="125" text-anchor="middle">cardholder</text><text class="sub" x="525" y="141" text-anchor="middle">card was stolen</text></g>
+  <path class="edge" d="M95 210 L250 70" marker-end="url(#ah)"/>
+  <g class="badge"><circle cx="160" cy="130" r="11"/><text x="160" y="134" text-anchor="middle">2</text></g>
+  <path class="edge bad" d="M370 70 L505 208" marker-end="url(#ahb)"/>
+  <g class="badge bad"><circle cx="410" cy="128" r="11"/><text x="410" y="132" text-anchor="middle">3</text></g>
+  <path class="edge" d="M450 244 L172 244" marker-end="url(#ah)"/>
+  <g class="badge"><circle cx="310" cy="244" r="11"/><text x="310" y="248" text-anchor="middle">4</text></g>
+  <path class="edge bad" d="M570 150 L570 208" marker-end="url(#ahb)"/>
+  <g class="badge bad"><circle cx="590" cy="180" r="11"/><text x="590" y="184" text-anchor="middle">5</text></g>
+</svg>

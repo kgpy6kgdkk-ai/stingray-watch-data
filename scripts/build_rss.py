@@ -199,6 +199,7 @@ button{{font:inherit;font-size:12px;color:#39FF14;background:transparent;border:
 {links}
 </ul>
 <p class="tip">slack: <code>/feed subscribe https://{host}/rss.xml</code> in any channel with the rss app installed.</p>
+<p>also here: the <a href="glossary/">fraud glossary</a>, 52 terms with how each scheme plays out and what analysts look for.</p>
 </main>
 <script>
 (function(){{

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 620 210" role="img" aria-label="A dispute travels from the cardholder to their issuing bank, through the card network and the acquirer, to the merchant, and the money is pulled back. The merchant can send evidence back the same way, and the issuer decides.">
+  <path class="edge bad" d="M60 50 L556 50" marker-end="url(#ahb)"/>
+  <text class="lbl" x="308" y="38" text-anchor="middle">dispute and chargeback: the money comes back out</text>
+  <g class="badge bad"><circle cx="60" cy="50" r="11"/><text x="60" y="54" text-anchor="middle">1</text></g>
+  <g class="badge bad"><circle cx="540" cy="50" r="11"/><text x="540" y="54" text-anchor="middle">2</text></g>
+  <g class="node"><rect x="8" y="76" width="104" height="54" rx="6"/><text x="60" y="100" text-anchor="middle">cardholder</text><text class="sub" x="60" y="117" text-anchor="middle">files the dispute</text></g>
+  <g class="node"><rect x="130" y="76" width="104" height="54" rx="6"/><text x="182" y="100" text-anchor="middle">issuer</text><text class="sub" x="182" y="117" text-anchor="middle">cardholder's bank</text></g>
+  <g class="node"><rect x="252" y="76" width="104" height="54" rx="6"/><text x="304" y="100" text-anchor="middle">card network</text><text class="sub" x="304" y="117" text-anchor="middle">sets the rules</text></g>
+  <g class="node"><rect x="374" y="76" width="104" height="54" rx="6"/><text x="426" y="100" text-anchor="middle">acquirer</text><text class="sub" x="426" y="117" text-anchor="middle">merchant's bank</text></g>
+  <g class="node"><rect x="496" y="76" width="104" height="54" rx="6"/><text x="548" y="100" text-anchor="middle">merchant</text><text class="sub" x="548" y="117" text-anchor="middle">takes the hit</text></g>
+  <path class="edge" d="M548 160 L186 160" marker-end="url(#ah)"/>
+  <text class="lbl" x="367" y="186" text-anchor="middle">representment: the merchant's evidence goes back</text>
+  <g class="badge"><circle cx="548" cy="160" r="11"/><text x="548" y="164" text-anchor="middle">3</text></g>
+  <g class="badge"><circle cx="182" cy="160" r="11"/><text x="182" y="164" text-anchor="middle">4</text></g>
+</svg>
