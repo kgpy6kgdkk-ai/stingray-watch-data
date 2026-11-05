@@ -104,3 +104,13 @@ Schema is a flat array under `items`, each entry the same shape as a `feed.json`
 ```
 
 **Updating `archive.json`:** whenever new items are added to `feed.json`, also **prepend** those same items (with `panel` added) to `archive.json`'s `items` array. Never remove or edit existing entries — this file should only ever grow. There's currently no scheduled job doing this automatically; it's a manual step alongside the weekly `feed.json` update until one exists.
+
+## glossary.json: the fraud glossary pages
+
+`glossary.json` powers the standalone fraud glossary at <https://feed.stingrayfraud.com/glossary/>, one page per term. `scripts/build_glossary.py` builds it in the same GitHub Pages workflow as the RSS feeds, so a merge to `main` republishes it.
+
+- `categories`: sidebar groups (`slug`, `name`, `intro`).
+- `terms`: `name`, `category` (a category slug), `definition`, and optionally `vector` (a `vectorTaxonomy` key; adds the monthly chart and "recent on Watch" list from `archive.json`), `related` (term names) and `explainer` (`context`, `steps` [{`title`, `body`}], `hard`, `lookFor`, `diagram` = a file in `diagrams/`).
+- `updated`: the "last updated" date shown on every page and in `sitemap.xml`. Bump it when you edit copy.
+
+Definitions are copied word for word from the glossary embed on Watch (it keeps its em-dashes on purpose). Until Watch reads this file directly, a definition change has to be made in both places. Explainer copy is written in the Stingray voice and has no em-dashes.

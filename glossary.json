@@ -1,0 +1,710 @@
+{
+  "updated": "2026-11-03",
+  "categories": [
+    {
+      "slug": "fraud-vectors",
+      "name": "fraud vectors",
+      "intro": "the 12 patterns Stingray Watch tracks. every item on Watch gets tagged with one of these, so each page shows what's been coming up lately."
+    },
+    {
+      "slug": "payments-and-cards",
+      "name": "payments & cards",
+      "intro": "the card side of things: how payments get checked and authenticated, and how card data gets stolen and used."
+    },
+    {
+      "slug": "disputes-and-returns",
+      "name": "disputes & returns",
+      "intro": "what happens after the sale: chargebacks, refunds, and the gray area between a real complaint and friendly fraud."
+    },
+    {
+      "slug": "accounts-and-identity",
+      "name": "accounts & identity",
+      "intro": "who is really behind an account, and the checks that try to answer that."
+    },
+    {
+      "slug": "scams-and-impersonation",
+      "name": "scams & impersonation",
+      "intro": "fraud that works by fooling a person instead of a system."
+    },
+    {
+      "slug": "bots-and-detection",
+      "name": "bots & detection",
+      "intro": "automation on both sides: the scripts fraudsters run, and the signals fraud teams use to spot them."
+    }
+  ],
+  "terms": [
+    {
+      "name": "account takeover (ATO)",
+      "category": "fraud-vectors",
+      "definition": "a fraudster gains unauthorized access to a legitimate customer's account — usually via credential stuffing, phishing, or a breached reused password — then uses the stored payment methods, loyalty points, or saved info to make fraudulent purchases.",
+      "vector": "ACCOUNT_TAKEOVER",
+      "related": [
+        "credential stuffing",
+        "phishing",
+        "SIM swapping",
+        "loyalty / points fraud",
+        "device fingerprinting",
+        "step-up authentication"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the fraudster gets the login.",
+            "body": "from a breach list, a phishing page, or a SIM swap that hands them the reset code."
+          },
+          {
+            "title": "they log in and look around.",
+            "body": "stored cards, gift card balance, loyalty points, saved addresses. the first session is often quiet."
+          },
+          {
+            "title": "they change what would let the owner back in.",
+            "body": "email, phone number, password, 2FA device. a new shipping address tends to show up here too."
+          },
+          {
+            "title": "they cash out.",
+            "body": "orders on the stored card to the new address, drained points or store credit, or the account itself gets resold."
+          },
+          {
+            "title": "the real owner notices.",
+            "body": "a dispute, a support ticket, or a reply to an order confirmation they didn't expect, usually after the goods shipped."
+          }
+        ],
+        "hard": "the login works, the card on file is the customer's own, and the account might have years of good history. the signals that normally say \"trusted\" are working for the fraudster.",
+        "lookFor": [
+          "a login from a new device or network, followed quickly by an email or phone change",
+          "a new shipping address added in the same session as a high-value order",
+          "a password reset and then an order within minutes",
+          "lots of different accounts logging in from one device or IP range"
+        ]
+      }
+    },
+    {
+      "name": "agentic AI fraud",
+      "category": "fraud-vectors",
+      "definition": "fraud involving autonomous AI shopping or browsing agents — either bad actors using automated agents for bulk card testing and scalping, or new fraud patterns and liability questions that emerge when ordinary consumers delegate purchasing decisions to an AI agent.",
+      "vector": "AGENTIC_AI",
+      "related": [
+        "bot attack",
+        "card testing",
+        "scalping",
+        "friendly fraud",
+        "device fingerprinting"
+      ],
+      "explainer": {
+        "context": "AI agents that browse and buy on someone's behalf are new, and so is the fraud around them. two things tend to show up: fraudsters using agents to do at scale what bots already did (card testing, scalping, account creation), and real customers disputing a purchase their own agent made.",
+        "hard": "a legitimate shopping agent and a malicious one can look the same at checkout: automated, fast, no human browsing. block all automation and real customers using agents get blocked too.",
+        "lookFor": [
+          "automated sessions cycling through many cards at checkout",
+          "disputes where the customer says their agent made the purchase, not them",
+          "agent traffic that skips straight to limited-stock items the moment they drop"
+        ]
+      }
+    },
+    {
+      "name": "auction / bidding abuse",
+      "category": "fraud-vectors",
+      "definition": "manipulation of bidding mechanics on live or timed auction platforms — shill bidding (fake bids to inflate price), bid shielding, and non-paying “winners” who bid with no intent to complete the purchase.",
+      "vector": "AUCTION_ABUSE",
+      "related": [
+        "multi-accounting",
+        "fake listings",
+        "device fingerprinting",
+        "trust & safety (T&S)"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the seller, or someone working with them, opens a second account.",
+            "body": "sometimes it's a friend's account, sometimes a fresh one on another device."
+          },
+          {
+            "title": "that account bids against real buyers.",
+            "body": "the goal is to push the price up toward what the real buyer is willing to pay."
+          },
+          {
+            "title": "the shill backs off just in time, or wins and never pays.",
+            "body": "if it wins, the item gets relisted or offered to the runner-up at the inflated price."
+          }
+        ],
+        "hard": "a shill bid looks like an eager buyer. you only see it once you link the bidder back to the seller.",
+        "lookFor": [
+          "a bidder who mostly bids on one seller's items",
+          "shared devices, IPs or payment details between a bidder and the seller",
+          "winners who don't pay, followed by a relist or a second-chance offer",
+          "bids that keep stopping just above the real buyer's last bid"
+        ]
+      }
+    },
+    {
+      "name": "card testing",
+      "category": "fraud-vectors",
+      "definition": "automated scripts running large volumes of small transactions against stolen card numbers to find which are still active, before using the confirmed-live ones for bigger fraudulent purchases elsewhere.",
+      "vector": "CARD_TESTING",
+      "related": [
+        "BIN attack",
+        "carding",
+        "bot attack",
+        "velocity checking",
+        "stolen payment methods"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the fraudster gets a batch of card numbers.",
+            "body": "from a breach, a card shop, or numbers generated from a known BIN."
+          },
+          {
+            "title": "a script runs tiny charges on a site with light checkout controls.",
+            "body": "donation pages and small digital goods are common picks."
+          },
+          {
+            "title": "the approvals show which cards are live.",
+            "body": "the declines are throwaways. the approvals are the product."
+          },
+          {
+            "title": "the live cards get used or resold for bigger purchases somewhere else.",
+            "body": "the tested site usually isn't where the real loss happens."
+          },
+          {
+            "title": "the tested merchant is left with the cleanup.",
+            "body": "auth fees, disputes on the small charges, and a decline spike their processor will notice."
+          }
+        ],
+        "hard": "every attempt is tiny and looks like a normal small order on its own. it's the volume and the pattern that give it away.",
+        "lookFor": [
+          "a sudden spike in declines over a short window",
+          "lots of different cards from one device, IP or session",
+          "many small orders on cards that share a BIN",
+          "billing details that change on every attempt"
+        ],
+        "diagram": "card-testing.svg"
+      }
+    },
+    {
+      "name": "chargebacks & disputes",
+      "category": "fraud-vectors",
+      "definition": "a transaction reversal a cardholder files through their bank rather than the merchant, disputing a charge as unauthorized, not-as-described, or otherwise invalid — chargebacks blend genuine fraud disputes with “friendly fraud,” where a real purchase is falsely disputed.",
+      "vector": "CHARGEBACK_DISPUTE",
+      "related": [
+        "friendly fraud",
+        "representment",
+        "chargeback ratio",
+        "first-party fraud",
+        "refund abuse",
+        "liability shift"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the cardholder contacts their bank and disputes a charge.",
+            "body": "the bank files it under a reason code: fraud, item not received, not as described, and so on."
+          },
+          {
+            "title": "the money gets pulled back from the merchant.",
+            "body": "it comes through the acquirer, usually with a fee on top."
+          },
+          {
+            "title": "the merchant decides whether to push back.",
+            "body": "that's representment: sending evidence that the charge was legitimate."
+          },
+          {
+            "title": "the issuer decides.",
+            "body": "some cases go another round, into pre-arbitration or arbitration."
+          }
+        ],
+        "hard": "the reason code says what the cardholder claimed, not what happened. a real fraud dispute and friendly fraud can come in under the same code.",
+        "lookFor": [
+          "the same customer filing repeat disputes",
+          "disputes on orders with confirmed delivery and normal account activity after",
+          "a chargeback arriving on an order that was already refunded",
+          "a dispute ratio creeping toward the card network thresholds"
+        ],
+        "diagram": "chargebacks-disputes.svg"
+      }
+    },
+    {
+      "name": "counterfeit / authenticity fraud",
+      "category": "fraud-vectors",
+      "definition": "selling fake or unauthorized replica goods marketed as genuine — a persistent problem even on resale platforms with paid authentication pipelines, since counterfeiters continually adapt to evade whatever detection is in place.",
+      "vector": "COUNTERFEIT",
+      "related": [
+        "fake listings",
+        "return fraud",
+        "dropshipping fraud",
+        "trust & safety (T&S)"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "a seller sources fakes.",
+            "body": "some are close enough to pass a quick look."
+          },
+          {
+            "title": "they list them as genuine.",
+            "body": "real product photos, believable prices, sometimes real-looking tags and boxes."
+          },
+          {
+            "title": "the fakes get sold, or swapped in on a return.",
+            "body": "the return version: buy the real item, send back a fake, keep the original."
+          },
+          {
+            "title": "someone finds out later.",
+            "body": "a buyer, an authenticator or the brand, and it turns into a dispute, a takedown or a legal complaint."
+          }
+        ],
+        "hard": "good fakes get past casual inspection, and even paid authentication programs miss some.",
+        "lookFor": [
+          "new sellers with high volume in high-risk categories like sneakers, bags, watches and trading cards",
+          "prices just under market, not wildly under",
+          "the same photos showing up across different sellers",
+          "returns where serial numbers or tags don't match what shipped"
+        ]
+      }
+    },
+    {
+      "name": "fake listings",
+      "category": "fraud-vectors",
+      "definition": "product or service listings that misrepresent what's actually being sold — items that don't exist, are materially different from their photos/description, or exist purely to collect payment with no intent to deliver.",
+      "vector": "LISTING_FRAUD",
+      "related": [
+        "counterfeit / authenticity fraud",
+        "triangulation fraud",
+        "dropshipping fraud",
+        "multi-accounting"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "a listing goes up for something the seller doesn't have, or that doesn't match the photos.",
+            "body": "hot items and fair-looking prices get the most attention."
+          },
+          {
+            "title": "buyers pay.",
+            "body": "often with a nudge to pay off-platform, or pressure to buy now before it's gone."
+          },
+          {
+            "title": "nothing ships, or something else does.",
+            "body": "sometimes with a tracking number that looks real at first."
+          },
+          {
+            "title": "by the time buyers complain, the account is gone.",
+            "body": "or there's already a new one up with the same photos."
+          }
+        ],
+        "hard": "a fresh listing with good photos and a fair price just looks like a good deal, right up until it doesn't ship.",
+        "lookFor": [
+          "new or recently reactivated accounts listing in-demand items",
+          "requests to move payment or chat off the platform",
+          "tracking numbers that go to the wrong city or were used before",
+          "photos and descriptions copied across several accounts"
+        ]
+      }
+    },
+    {
+      "name": "promo abuse",
+      "category": "fraud-vectors",
+      "definition": "exploiting discount codes, referral bonuses, sign-up incentives, or promotional pricing beyond their intended use — like creating multiple fake accounts to repeatedly claim a “new customer” discount.",
+      "vector": "PROMO_ABUSE",
+      "related": [
+        "multi-accounting",
+        "device fingerprinting",
+        "bot attack",
+        "loyalty / points fraud"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the fraudster finds a generous promo.",
+            "body": "a new-customer discount, a referral bonus, a free trial."
+          },
+          {
+            "title": "they create lots of accounts.",
+            "body": "new emails and phone numbers, and sometimes small tweaks to the same address."
+          },
+          {
+            "title": "every account claims the promo.",
+            "body": "referrals often point back at each other."
+          },
+          {
+            "title": "the goods or credits get used or resold.",
+            "body": "and most of the accounts never order again."
+          }
+        ],
+        "hard": "every signup looks like a new customer, and new customers are exactly what the promo was for.",
+        "lookFor": [
+          "many accounts sharing a device, card, or address with small variations (apt 1, apt-1, unit 1)",
+          "email patterns like name+1, name+2, or lots of signups from one uncommon domain",
+          "referral chains where the accounts all refer each other",
+          "accounts that redeem once and go quiet"
+        ]
+      }
+    },
+    {
+      "name": "refund abuse",
+      "category": "fraud-vectors",
+      "definition": "when a buyer receives goods or services, then falsely claims non-delivery, damage, or dissatisfaction to get a refund while keeping the item — or repeatedly exploits lenient return policies well past legitimate dissatisfaction.",
+      "vector": "REFUND_ABUSE",
+      "related": [
+        "return fraud",
+        "friendly fraud",
+        "wardrobing",
+        "first-party fraud",
+        "social engineering"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the buyer orders and gets the item.",
+            "body": "this part is a normal order."
+          },
+          {
+            "title": "they claim it never arrived, arrived empty, or arrived broken.",
+            "body": "or they send back an empty box or a different item."
+          },
+          {
+            "title": "support refunds to keep the customer happy.",
+            "body": "the claim fits the policy, so it goes through."
+          },
+          {
+            "title": "it repeats.",
+            "body": "sometimes it's run as a paid service, where someone else files the claims for a cut."
+          }
+        ],
+        "hard": "real delivery problems happen all the time, and support teams are set up to give customers the benefit of the doubt.",
+        "lookFor": [
+          "one customer with a high rate of \"item not received\" claims",
+          "claims on orders with signature or photo proof of delivery",
+          "returned packages that weigh less than what shipped",
+          "claims that reuse the same script or wording across accounts"
+        ]
+      }
+    },
+    {
+      "name": "social engineering",
+      "category": "fraud-vectors",
+      "definition": "fraud that manipulates a person — a customer, a support agent, an employee — into taking an action like revealing credentials, approving a refund, or redirecting a shipment, rather than exploiting a technical vulnerability.",
+      "vector": "SOCIAL_ENGINEERING",
+      "related": [
+        "phishing",
+        "vishing",
+        "smishing",
+        "business email compromise (BEC)",
+        "account takeover (ATO)"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "the fraudster picks a person who can do what they want.",
+            "body": "a customer, a support agent, someone in finance."
+          },
+          {
+            "title": "they set up a story.",
+            "body": "urgent and believable, often pretending to be someone trusted: the bank, support, a boss."
+          },
+          {
+            "title": "they get the person to act.",
+            "body": "share a code, reset an account, approve a refund, change payment details."
+          },
+          {
+            "title": "the money or access moves.",
+            "body": "and the person usually doesn't realize until later."
+          }
+        ],
+        "hard": "every technical control can pass, because a real person with real access did the thing.",
+        "lookFor": [
+          "support contacts that push urgency or ask to skip the normal steps",
+          "account changes made by an agent right after a call or chat",
+          "requests to change payment or bank details that only come by email",
+          "customers mentioning a call \"from your fraud team\""
+        ]
+      }
+    },
+    {
+      "name": "stolen payment methods",
+      "category": "fraud-vectors",
+      "definition": "use of payment credentials — card numbers, digital wallet access, gift card balances — obtained through data breaches, skimming, phishing, or physical theft, without the account holder's knowledge or consent.",
+      "vector": "STOLEN_PAYMENT",
+      "related": [
+        "card testing",
+        "card-not-present (CNP) fraud",
+        "carding",
+        "skimming",
+        "triangulation fraud",
+        "gift card fraud"
+      ],
+      "explainer": {
+        "steps": [
+          {
+            "title": "payment data gets stolen.",
+            "body": "a breach, a skimmer, a phishing page, or a stolen wallet."
+          },
+          {
+            "title": "it gets sold, tested and sorted.",
+            "body": "card testing is how fraudsters find out which cards still work."
+          },
+          {
+            "title": "live cards buy things that resell easily.",
+            "body": "electronics, gift cards, sneakers."
+          },
+          {
+            "title": "the cardholder disputes, and the merchant takes the chargeback.",
+            "body": "the goods are usually long gone by then."
+          }
+        ],
+        "hard": "the card number, CVV, and sometimes even the billing address are all correct. the only thing missing is the real cardholder.",
+        "lookFor": [
+          "billing and shipping that don't match, with no gift context",
+          "high-resale items ordered on brand new accounts",
+          "several cards tried on one order before one goes through",
+          "shipping to freight forwarders or reshippers"
+        ]
+      }
+    },
+    {
+      "name": "triangulation fraud",
+      "category": "fraud-vectors",
+      "definition": "a three-party scheme: a fraudster lists real products cheaply on a legitimate marketplace, collects payment from real buyers, then uses stolen card data to buy those items from the actual retailer and ship to the buyer — the buyer gets real goods unaware they came from a fraudulent transaction, while the cardholder behind the stolen data eventually disputes the charge.",
+      "vector": "TRIANGULATION",
+      "related": [
+        "stolen payment methods",
+        "chargebacks & disputes",
+        "fake listings",
+        "card-not-present (CNP) fraud",
+        "representment",
+        "velocity checking"
+      ],
+      "explainer": {
+        "diagram": "triangulation-fraud.svg",
+        "steps": [
+          {
+            "title": "the fraudster lists real products below market price.",
+            "body": "usually on a big marketplace, where the low price brings in buyers and the platform's name does the trust work."
+          },
+          {
+            "title": "a real buyer orders and pays the fraudster.",
+            "body": "the money is real and lands in the seller's account. the buyer hasn't done anything wrong."
+          },
+          {
+            "title": "the fraudster buys the same item from a real retailer with a stolen card.",
+            "body": "it ships straight to the buyer's name and address, so the fraudster never touches the goods."
+          },
+          {
+            "title": "the buyer gets the genuine item.",
+            "body": "no complaint, no bad review. on the marketplace side it looks like a happy customer."
+          },
+          {
+            "title": "the cardholder spots the charge and disputes it.",
+            "body": "weeks later the retailer takes the chargeback, and the goods are already gone. the fraudster keeps the buyer's payment."
+          }
+        ],
+        "hard": "every order the retailer sees ships to a real person who actually wants the item. delivery succeeds, nobody complains, and it only shows up as a chargeback after the money's gone.",
+        "lookFor": [
+          "the ship-to name doesn't match the cardholder, and there's no gift note",
+          "one card shipping to lots of unrelated addresses, or one address receiving lots of cards",
+          "a customer who contacts support with a marketplace order number you don't recognize",
+          "a run of chargebacks on items that are listed cheap on a marketplace right now"
+        ]
+      }
+    },
+    {
+      "name": "3D Secure (3DS)",
+      "category": "payments-and-cards",
+      "definition": "an authentication protocol (branded as Visa Secure, Mastercard Identity Check, etc.) that adds a verification step to online card payments and shifts fraud liability to the card issuer when it's used and the issuer fails to properly challenge a fraudulent transaction."
+    },
+    {
+      "name": "address verification system (AVS)",
+      "category": "payments-and-cards",
+      "definition": "a checkout-time check that compares the billing address a shopper enters against the address the card issuer has on file, used as one signal (not proof) that the person paying is the cardholder."
+    },
+    {
+      "name": "BIN attack",
+      "category": "payments-and-cards",
+      "definition": "fraudsters systematically generate and test card numbers that share a bank identification number (BIN) prefix, since valid card numbers within a given BIN follow a predictable numbering pattern."
+    },
+    {
+      "name": "card-not-present (CNP) fraud",
+      "category": "payments-and-cards",
+      "definition": "fraud on transactions where the physical card is never shown to the merchant, such as online or phone orders — the dominant fraud category for e-commerce, since the usual in-person checks (signature, chip, physical card) don't apply."
+    },
+    {
+      "name": "carding",
+      "category": "payments-and-cards",
+      "definition": "testing or using stolen card numbers to make purchases, typically with automated tools — the umbrella term that card testing and BIN attacks both fall under."
+    },
+    {
+      "name": "CVV",
+      "category": "payments-and-cards",
+      "definition": "the card verification value printed on a payment card (separate from the card number), used at checkout as a check that the person paying has physical possession of the card, since it's not stored in most card-present transaction records."
+    },
+    {
+      "name": "gift card fraud",
+      "category": "payments-and-cards",
+      "definition": "covers both card-draining (automatically guessing or scraping unused gift card balances before a legitimate buyer redeems them) and using gift cards purchased with stolen payment methods to launder value into a harder-to-trace form."
+    },
+    {
+      "name": "liability shift",
+      "category": "payments-and-cards",
+      "definition": "when fraud liability for a disputed transaction moves from the merchant to the card issuer — typically because the merchant used a stronger authentication method (like 3D Secure) that the issuer then failed to properly challenge."
+    },
+    {
+      "name": "PCI DSS",
+      "category": "payments-and-cards",
+      "definition": "the Payment Card Industry Data Security Standard — a set of security requirements every business that stores, processes, or transmits card data is contractually required to follow."
+    },
+    {
+      "name": "skimming",
+      "category": "payments-and-cards",
+      "definition": "illegally capturing card data from the magnetic stripe or chip during what looks like a normal transaction, usually via a hidden device attached to a card reader."
+    },
+    {
+      "name": "step-up authentication",
+      "category": "payments-and-cards",
+      "definition": "adding an extra verification step — a one-time code, biometric check, 3D Secure challenge — only when a specific transaction looks risky, rather than requiring it for every checkout and adding friction to low-risk purchases."
+    },
+    {
+      "name": "bracketing",
+      "category": "disputes-and-returns",
+      "definition": "ordering multiple sizes, colors, or variations of the same item with the intent to keep only one and return the rest — each individual return is policy-compliant, but the pattern still inflates a merchant's return-processing costs."
+    },
+    {
+      "name": "chargeback ratio",
+      "category": "disputes-and-returns",
+      "definition": "the percentage of a merchant's transactions that result in a chargeback; card networks fine or terminate merchants whose ratio exceeds set thresholds, which is why chargeback prevention is treated as an existential metric, not just a cost center."
+    },
+    {
+      "name": "first-party fraud",
+      "category": "disputes-and-returns",
+      "definition": "fraud committed by the actual account holder against the merchant or issuer — friendly fraud, application fraud using one's own real identity, bust-out fraud — as opposed to a criminal impersonating someone else."
+    },
+    {
+      "name": "friendly fraud",
+      "category": "disputes-and-returns",
+      "definition": "a cardholder disputes a legitimate charge they actually authorized — sometimes by genuine mistake or forgotten subscription, sometimes deliberately to get goods for free — and is generally considered the single largest driver of chargebacks industry-wide."
+    },
+    {
+      "name": "representment",
+      "category": "disputes-and-returns",
+      "definition": "a merchant's formal response disputing a chargeback, submitting evidence (delivery confirmation, IP logs, prior order history) that the original transaction was legitimate."
+    },
+    {
+      "name": "return fraud",
+      "category": "disputes-and-returns",
+      "definition": "abusing a merchant's return policy — including wardrobing, receipt fraud, and returning stolen, used, or different items than what was originally purchased — distinct from refund abuse in that a real return happens, just a dishonest one."
+    },
+    {
+      "name": "third-party fraud",
+      "category": "disputes-and-returns",
+      "definition": "fraud committed using someone else's stolen identity or payment credentials without their knowledge — the more commonly assumed meaning of \"fraud,\" as opposed to first-party fraud committed by a real, willing account holder."
+    },
+    {
+      "name": "wardrobing",
+      "category": "disputes-and-returns",
+      "definition": "buying an item — commonly clothing for a single event — using it once, then returning it for a full refund as if it were unworn."
+    },
+    {
+      "name": "anti-money laundering (AML)",
+      "category": "accounts-and-identity",
+      "definition": "the laws, regulations, and internal controls designed to stop criminals from disguising illegally obtained money as legitimate income, typically enforced through transaction monitoring and reporting requirements."
+    },
+    {
+      "name": "bust-out fraud",
+      "category": "accounts-and-identity",
+      "definition": "a fraudster builds a legitimate-looking account or credit history over time — sometimes using a synthetic identity — then maxes out available credit, credit lines, or inventory access in a short window before disappearing."
+    },
+    {
+      "name": "credential stuffing",
+      "category": "accounts-and-identity",
+      "definition": "using large lists of username/password pairs leaked in unrelated data breaches to automatically try logging into other sites, exploiting the fact that many people reuse the same password across services."
+    },
+    {
+      "name": "know your customer (KYC)",
+      "category": "accounts-and-identity",
+      "definition": "the identity-verification process businesses — especially financial and payments platforms — are legally required to run on customers before allowing certain account activity, meant to prevent fraud, money laundering, and use by sanctioned parties."
+    },
+    {
+      "name": "loyalty / points fraud",
+      "category": "accounts-and-identity",
+      "definition": "stealing or abusing loyalty program points and rewards, often via account takeover of dormant accounts sitting on accumulated balances the real owner has forgotten about."
+    },
+    {
+      "name": "money mule",
+      "category": "accounts-and-identity",
+      "definition": "a person who receives and transfers illegally obtained money on behalf of someone else — often unknowingly, recruited through a fake job offer or romance scam — to obscure the money's true origin."
+    },
+    {
+      "name": "multi-accounting",
+      "category": "accounts-and-identity",
+      "definition": "one person or organized group operating many accounts on the same platform, usually to evade rate limits or bans, abuse promotions repeatedly, or manipulate reviews and ratings."
+    },
+    {
+      "name": "SIM swapping",
+      "category": "accounts-and-identity",
+      "definition": "fraudulently transferring a victim's phone number to a new SIM card under the fraudster's control, letting them intercept SMS-based one-time passcodes and account-recovery messages meant for the real owner."
+    },
+    {
+      "name": "synthetic identity fraud",
+      "category": "accounts-and-identity",
+      "definition": "fraud built on a fabricated identity that blends real information (like a stolen or randomly generated SSN) with fake details, designed to pass verification checks and build a credible credit history before a bust-out."
+    },
+    {
+      "name": "business email compromise (BEC)",
+      "category": "scams-and-impersonation",
+      "definition": "a scam where a fraudster impersonates an executive, vendor, or colleague via email to trick an employee into an unauthorized wire transfer or a change to payment/banking details."
+    },
+    {
+      "name": "phishing",
+      "category": "scams-and-impersonation",
+      "definition": "a fraudulent message impersonating a trusted party — a bank, a retailer, a coworker — designed to trick someone into revealing credentials, payment details, or clicking a malicious link."
+    },
+    {
+      "name": "smishing",
+      "category": "scams-and-impersonation",
+      "definition": "phishing conducted via SMS text message — often impersonating a delivery notification, bank alert, or account-security warning to create urgency."
+    },
+    {
+      "name": "vishing",
+      "category": "scams-and-impersonation",
+      "definition": "phishing conducted via phone call, often with a caller impersonating a bank's fraud department or a delivery service to extract credentials or a one-time code."
+    },
+    {
+      "name": "bot attack",
+      "category": "bots-and-detection",
+      "definition": "automated scripts mimicking human traffic to perform actions at scale — credential stuffing, card testing, inventory scalping, or mass fake-account creation — faster and cheaper than any human fraud ring could manage manually."
+    },
+    {
+      "name": "device fingerprinting",
+      "category": "bots-and-detection",
+      "definition": "a fraud-detection technique that identifies a device by its combination of browser, hardware, and configuration signals, used to recognize the same physical device operating behind multiple supposedly-unrelated fake accounts."
+    },
+    {
+      "name": "dropshipping fraud",
+      "category": "bots-and-detection",
+      "definition": "a seller lists and sells products they don't actually stock or control, and either never fulfills the order, ships something materially different, or sources it through another fraudulent channel to fill it."
+    },
+    {
+      "name": "false negative",
+      "category": "bots-and-detection",
+      "definition": "a fraud-detection system fails to catch an actually-fraudulent transaction or account, letting it through — the failure mode that costs money directly."
+    },
+    {
+      "name": "false positive",
+      "category": "bots-and-detection",
+      "definition": "a fraud-detection system incorrectly flags a legitimate customer or transaction as fraudulent, causing lost sales, a declined real customer, and support friction — the failure mode that costs revenue and trust."
+    },
+    {
+      "name": "scalping",
+      "category": "bots-and-detection",
+      "definition": "using bots to buy limited-availability inventory — sneakers, event tickets, restocked electronics — faster than real customers can, in order to resell it at a markup."
+    },
+    {
+      "name": "trust & safety (T&S)",
+      "category": "bots-and-detection",
+      "definition": "the discipline within a company responsible for protecting users and the platform itself from fraud, abuse, harassment, and policy-violating content — overlaps with but is broader than fraud prevention alone."
+    },
+    {
+      "name": "velocity checking",
+      "category": "bots-and-detection",
+      "definition": "a fraud-detection technique that flags unusually rapid activity — too many orders, logins, or password resets from the same card, account, device, or IP address in too short a window."
+    }
+  ]
+}

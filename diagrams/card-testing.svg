@@ -1,0 +1,20 @@
+<svg viewBox="0 0 620 290" role="img" aria-label="A stolen card list feeds a testing script, which runs tiny charges through a merchant's checkout. Most attempts decline. The approvals are live cards, which get used for bigger purchases somewhere else. The tested merchant is left with fees and disputes.">
+  <g class="node"><rect x="10" y="104" width="128" height="56" rx="6"/><text x="74" y="128" text-anchor="middle">card list</text><text class="sub" x="74" y="145" text-anchor="middle">breach or card shop</text></g>
+  <g class="node bad"><rect x="168" y="104" width="128" height="56" rx="6"/><text x="232" y="128" text-anchor="middle">testing script</text><text class="sub" x="232" y="145" text-anchor="middle">tiny charges, fast</text></g>
+  <g class="node"><rect x="326" y="104" width="128" height="56" rx="6"/><text x="390" y="128" text-anchor="middle">checkout</text><text class="sub" x="390" y="145" text-anchor="middle">the tested merchant</text></g>
+  <g class="node muted"><rect x="482" y="20" width="128" height="50" rx="6"/><text x="546" y="42" text-anchor="middle">declines</text><text class="sub" x="546" y="58" text-anchor="middle">most attempts</text></g>
+  <g class="node bad"><rect x="482" y="190" width="128" height="50" rx="6"/><text x="546" y="212" text-anchor="middle">live cards</text><text class="sub" x="546" y="228" text-anchor="middle">the ones that worked</text></g>
+  <path class="edge" d="M138 132 L164 132" marker-end="url(#ah)"/>
+  <path class="edge bad" d="M296 132 L322 132" marker-end="url(#ahb)"/>
+  <g class="badge bad"><circle cx="309" cy="104" r="11"/><text x="309" y="108" text-anchor="middle">2</text></g>
+  <path class="edge muted" d="M454 118 L512 72" marker-end="url(#ahm)"/>
+  <path class="edge bad" d="M454 146 L512 188" marker-end="url(#ahb)"/>
+  <g class="badge bad"><circle cx="470" cy="180" r="11"/><text x="470" y="184" text-anchor="middle">3</text></g>
+  <path class="edge bad dash" d="M546 240 L546 270 L470 270" marker-end="url(#ahb)"/>
+  <text class="lbl" x="462" y="274" text-anchor="end">bigger purchases elsewhere</text>
+  <g class="badge bad"><circle cx="566" cy="262" r="11"/><text x="566" y="266" text-anchor="middle">4</text></g>
+  <g class="badge"><circle cx="74" cy="84" r="11"/><text x="74" y="88" text-anchor="middle">1</text></g>
+  <text class="lbl" x="390" y="182" text-anchor="middle">left with fees</text>
+  <text class="lbl" x="390" y="197" text-anchor="middle">and disputes</text>
+  <g class="badge"><circle cx="390" cy="220" r="11"/><text x="390" y="224" text-anchor="middle">5</text></g>
+</svg>

@@ -1,9 +1,9 @@
-name: Build RSS feed
+name: Build RSS feed and glossary
 
 on:
   push:
     branches: [main]
-    paths: [feed.json, scripts/build_rss.py, .github/workflows/rss.yml, assets/**]
+    paths: [feed.json, archive.json, glossary.json, scripts/**, diagrams/**, .github/workflows/rss.yml, assets/**]
   schedule:
     # Daily rebuild so items age out of the 90-day window even without a merge.
     - cron: "17 12 * * *"
@@ -28,6 +28,8 @@ jobs:
           python-version: "3.12"
       - name: Build feeds
         run: python3 scripts/build_rss.py _site
+      - name: Build glossary
+        run: python3 scripts/build_glossary.py _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
