@@ -2,8 +2,8 @@
 """Build the Stingray fraud glossary pages from glossary.json and archive.json.
 
 Writes to the output directory (default: _site), next to the RSS feeds:
-  glossary/index.html             every term, grouped by category, with a chart
-                                  of Watch items per fraud vector
+  glossary/index.html             a pattern board for the fraud vectors (Watch
+                                  counts + sparklines) and an A-Z of every other term
   glossary/<slug>/index.html      one page per term
   glossary/glossary.css           shared styles
   sitemap.xml, robots.txt         for search engines
@@ -122,31 +122,37 @@ def month_chart(vector_name, months, counts):
     return '<figure class="chart-wrap">%s%s</figure>' % ("".join(parts), table)
 
 
-def vector_chart(rows):
-    """Horizontal bars: Watch items per fraud vector, all time. rows = [(term, count)] sorted desc."""
-    w, label_w, bar_h, gap, right = 620, 210, 18, 10, 40
-    h = len(rows) * (bar_h + gap) + 6
-    peak = max(c for _, c in rows) or 1
-    pw = w - label_w - right
-    parts = ['<svg class="chart" viewBox="0 0 %d %d" role="img" aria-label="%s">' % (
-        w, h, esc("Watch items per fraud vector: " + ", ".join("%s %d" % (t["name"], c) for t, c in rows)))]
-    for i, (t, c) in enumerate(rows):
-        y = 4 + i * (bar_h + gap)
-        bw = max(pw * c / peak, 3 if c else 0)
-        tip = "%s: %d item%s" % (t["name"], c, "" if c == 1 else "s")
-        parts.append('<a href="%s/" class="hit" data-tip="%s">' % (slug(t["name"]), esc(tip)))
-        parts.append('<rect class="target" x="0" y="%d" width="%d" height="%d"/>' % (y - gap / 2, w, bar_h + gap))
-        parts.append('<text class="cat" x="%d" y="%d" text-anchor="end">%s</text>' % (label_w - 12, y + 13, esc(t["name"])))
-        if c:
-            r = min(4, bw)
-            x0 = label_w
-            parts.append('<path class="bar" d="M%d %d H%.1f Q%.1f %d %.1f %d V%d Q%.1f %d %.1f %d H%d Z"/>' % (
-                x0, y, x0 + bw - r, x0 + bw, y, x0 + bw, y + r, y + bar_h - r, x0 + bw, y + bar_h, x0 + bw - r, y + bar_h, x0))
-        parts.append('<text class="val" x="%.1f" y="%d">%d</text>' % (label_w + bw + 6, y + 13, c))
-        parts.append("</a>")
-    parts.append('<line class="axis" x1="%d" x2="%d" y1="0" y2="%d"/>' % (label_w, label_w, h))
-    parts.append("</svg>")
-    return '<figure class="chart-wrap wide">%s</figure>' % "".join(parts)
+def sparkline(counts, peak, months):
+    """Tiny trend line for the pattern board. All rows share one scale so they compare honestly."""
+    w, h, p = 84, 26, 3
+    n = len(counts)
+    xs = [p + (i * (w - 2 * p) / (n - 1) if n > 1 else (w - 2 * p) / 2) for i in range(n)]
+    ys = [h - p - (h - 2 * p) * c / max(peak, 1) for c in counts]
+    pts = " ".join("%.1f,%.1f" % xy for xy in zip(xs, ys))
+    tip = ", ".join("%s %d" % (month_label(m), c) for m, c in zip(months, counts))
+    return ('<svg class="spark" viewBox="0 0 %d %d" role="img" aria-label="by month: %s"><title>by month: %s</title>'
+            '<line class="base" x1="%d" x2="%d" y1="%d" y2="%d"/><path class="area" d="M%.1f,%d L%s L%.1f,%d Z"/>'
+            '<polyline points="%s"/><circle cx="%.1f" cy="%.1f" r="2.6"/></svg>') % (
+        w, h, tip, tip, p, w - p, h - p, h - p, xs[0], h - p, " L".join("%.1f,%.1f" % xy for xy in zip(xs, ys)),
+        xs[-1], h - p, pts, xs[-1], ys[-1])
+
+
+# One line icon per category (24px grid, stroke = currentColor).
+ICONS = {
+    "fraud-vectors": '<path d="M4 12a8 8 0 0 1 8 8"/><path d="M4 5a15 15 0 0 1 15 15"/><circle cx="5.5" cy="18.5" r="1.8" fill="currentColor" stroke="none"/>',
+    "payments-and-cards": '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/>',
+    "disputes-and-returns": '<path d="M4 9h12l-3-3"/><path d="M20 15H8l3 3"/>',
+    "accounts-and-identity": '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+    "scams-and-impersonation": '<path d="M12 3v9a4 4 0 1 1-4-4"/><path d="M8 8l-2 2"/>',
+    "bots-and-detection": '<rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 4v4"/><circle cx="9.5" cy="13.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="13.5" r="1.2" fill="currentColor" stroke="none"/>',
+    "a-z": '<path d="M5 5h14M5 10h14M5 15h9M5 20h6"/>',
+}
+
+
+def icon(key, size=16):
+    return ('<svg class="ico" width="%d" height="%d" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+            'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>') % (
+        size, size, ICONS.get(key, ICONS["a-z"]))
 
 
 DIAGRAM_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -199,18 +205,24 @@ FOOT = """<footer class="site-foot"><div class="wrap">
 (function(){{
   function ev(n,p){{if(typeof gtag==='function')gtag('event',n,p||{{}});}}
   var page=document.body.getAttribute('data-term')||'index';
-  var q=document.getElementById('q');
-  if(q)q.addEventListener('input',function(){{
+  var q=document.getElementById('q'),cat='all';
+  function apply(){{
     var f=q.value.trim().toLowerCase(),any=false;
     document.querySelectorAll('[data-find]').forEach(function(el){{
-      var hit=!f||el.getAttribute('data-find').indexOf(f)>-1;el.hidden=!hit;if(hit)any=true;
+      var c=el.getAttribute('data-cat');
+      var hit=(!f||el.getAttribute('data-find').indexOf(f)>-1)&&(!c||cat==='all'||c===cat);el.hidden=!hit;if(hit)any=true;
     }});
     document.querySelectorAll('[data-group]').forEach(function(g){{
       var vis=g.querySelectorAll('[data-find]:not([hidden])').length;g.hidden=!vis;
       if(f&&vis&&g.tagName==='DETAILS')g.open=true;
     }});
     var nr=document.getElementById('noresults');if(nr)nr.hidden=any;
-  }});
+  }}
+  if(q)q.addEventListener('input',apply);
+  document.querySelectorAll('.cf').forEach(function(b){{b.addEventListener('click',function(){{
+    cat=b.getAttribute('data-cf');document.querySelectorAll('.cf').forEach(function(x){{x.classList.toggle('on',x===b);}});apply();
+    ev('glossary_filter',{{category:cat}});
+  }});}});
   document.querySelectorAll('[data-rate] button').forEach(function(b){{
     b.addEventListener('click',function(){{
       b.parentNode.querySelectorAll('button').forEach(function(x){{x.setAttribute('aria-pressed',x===b?'true':'false');}});
@@ -271,8 +283,8 @@ def sidebar(cats, by_cat, current):
     for c in cats:
         terms = by_cat[c["slug"]]
         is_open = any(slug(t["name"]) == current for t in terms)
-        out.append('<details class="cat" data-group%s><summary>%s<span class="n">%d</span></summary><ul>' % (
-            " open" if is_open else "", esc(c["name"]), len(terms)))
+        out.append('<details class="cat" data-group%s><summary><span class="cat-name">%s%s</span><span class="n">%d</span></summary><ul>' % (
+            " open" if is_open else "", icon(c["slug"]), esc(c["name"]), len(terms)))
         for t in terms:
             s = slug(t["name"])
             out.append('<li data-find="%s"><a href="/glossary/%s/"%s>%s</a></li>' % (
@@ -327,7 +339,7 @@ def term_page(t, ctx):
                 '<a href="/glossary/#%s">%s</a><span>›</span><span>%s</span></nav>' % (cat["slug"], esc(cat["name"]), esc(t["name"])))
     body.append("<article>")
     body.append("<h1>%s</h1>" % esc(t["name"]))
-    tags = ['<span class="tag">%s</span>' % esc(cat["name"])]
+    tags = ['<span class="tag">%s%s</span>' % (icon(cat["slug"], 12), esc(cat["name"]))]
     items = ctx["items_by_vector"].get(vector, []) if vector else []
     if vector:
         tags.append('<span class="tag code">%s</span>' % esc(vector))
@@ -392,31 +404,79 @@ def term_page(t, ctx):
     return shell(title, short(t["definition"]), canonical, jsonld, "".join(body), s)
 
 
+def letter_of(name):
+    ch = name[0].upper()
+    return ch if ch.isalpha() else "#"
+
+
 def index_page(ctx):
+    """Reference-book index: a pattern board for the 12 vectors, then an A-Z of everything else."""
+    vectors = [t for t in ctx["terms"] if t.get("vector")]
+    others = sorted((t for t in ctx["terms"] if not t.get("vector")), key=lambda t: t["name"].lower())
+    count = lambda t: len(ctx["items_by_vector"].get(t["vector"], []))
+    vectors.sort(key=lambda t: (-count(t), t["name"]))
+    months = ctx["months"]
+    peak = max([count(t) for t in vectors] + [1])
+    monthly = {t["vector"]: [ctx["month_counts"][t["vector"]].get(m, 0) for m in months] for t in vectors}
+    spark_peak = max([max(v) for v in monthly.values()] + [1])
+    span = "%s–%s" % (month_label(months[0]), month_label(months[-1]))
+
     body = [search_band("fraud glossary",
                         "%d fraud and trust &amp; safety terms, written the way fraud analysts actually use them. "
-                        "the 12 fraud vectors link to what's showing up on Stingray Watch." % len(ctx["terms"]))]
-    body.append('<div class="wrap index">')
-    rows = sorted(((t, len(ctx["items_by_vector"].get(t["vector"], []))) for t in ctx["terms"] if t.get("vector")),
-                  key=lambda r: (-r[1], r[0]["name"]))
-    body.append('<section class="panel"><h2>what Watch has been tracking</h2>'
-                '<p class="chart-note">items on Stingray Watch by fraud vector, since %s. tap a bar to open that term.</p>%s</section>' % (
-                    month_label(ctx["months"][0], True), vector_chart(rows)))
-    for c in ctx["cats"]:
-        body.append('<section class="group" id="%s" data-group><h2>%s <span class="n">%d</span></h2><p class="intro">%s</p><ul class="cards">' % (
-            c["slug"], esc(c["name"]), len(ctx["by_cat"][c["slug"]]), esc(c["intro"])))
-        for t in ctx["by_cat"][c["slug"]]:
-            body.append('<li data-find="%s"><a href="%s/"><b>%s</b><span>%s</span></a></li>' % (
-                esc((t["name"] + " " + t["definition"]).lower()), slug(t["name"]), esc(t["name"]), esc(t["definition"])))
-        body.append("</ul></section>")
-    body.append('<p class="empty" id="noresults" hidden>no terms match that search.</p>')
+                        "read it top to bottom, or jump to a term." % len(ctx["terms"]))]
+    body[0] = body[0].replace("</label>\n</div></section>",
+                              '</label>\n  <div class="jump"><a href="#vectors">the %d fraud vectors</a>'
+                              '<a href="#az">A–Z, %d more terms</a></div>\n</div></section>' % (len(vectors), len(others)))
+    body.append('<main class="wrap index">')
+
+    body.append('<section id="vectors"><h2 class="sec-h">%s fraud vectors <span class="n">%d</span></h2>' % (
+        icon("fraud-vectors", 22), len(vectors)))
+    body.append('<p class="sec-p">the patterns Stingray Watch tracks, busiest first. the bar is every item Watch has '
+                'tagged since %s, the line is how it\'s moved month to month.</p>' % month_label(months[0], True))
+    body.append('<ul class="board"><li class="board-head" aria-hidden="true"><span>pattern</span>'
+                '<span>on Watch · %s</span><span>what it is</span></li>' % span)
+    for t in vectors:
+        c = count(t)
+        body.append('<li class="vrow" data-find="%s"><a class="vname" href="%s/">%s</a>'
+                    '<div class="vstat"><span class="track"><span class="fill" style="width:%.1f%%"></span></span>'
+                    '<span class="num">%d</span>%s</div><p class="vdef">%s</p></li>' % (
+                        esc((t["name"] + " " + t["definition"]).lower()), slug(t["name"]), esc(t["name"]),
+                        100.0 * c / peak, c, sparkline(monthly[t["vector"]], spark_peak, months), esc(t["definition"])))
+    body.append('</ul><div class="legend"><span><i></i>items tagged on Stingray Watch</span>'
+                '<span>line: %s, dot = this month</span></div></section>' % span.replace("–", " → "))
+
+    groups = {}
+    for t in others:
+        groups.setdefault(letter_of(t["name"]), []).append(t)
+    alphabet = ["#"] + [chr(c) for c in range(65, 91)]
+    anchor = lambda L: "l-num" if L == "#" else "l-" + L
+    letters = "".join('<a href="#%s">%s</a>' % (anchor(L), L) if L in groups else "<span>%s</span>" % L for L in alphabet)
+    filters = '<button type="button" class="cf on" data-cf="all">all</button>' + "".join(
+        '<button type="button" class="cf" data-cf="%s">%s%s</button>' % (c["slug"], icon(c["slug"], 14), esc(c["name"]))
+        for c in ctx["cats"] if any(t["category"] == c["slug"] for t in others))
+    body.append('<section id="az"><h2 class="sec-h">%s glossary A–Z <span class="n">%d</span></h2>' % (icon("a-z", 22), len(others)))
+    body.append('<p class="sec-p">the rest of the vocabulary: payments, disputes, identity, scams and detection.</p>')
+    body.append('<div class="azbar"><nav class="letters" aria-label="Jump to letter">%s</nav>'
+                '<div class="cfs" role="group" aria-label="Filter by category">%s</div></div>' % (letters, filters))
+    for L in alphabet:
+        if L not in groups:
+            continue
+        body.append('<section class="letter" id="%s" data-group><h3>%s</h3><dl>' % (anchor(L), L))
+        for t in groups[L]:
+            c = ctx["cat_by_slug"][t["category"]]
+            body.append('<div class="entry" data-find="%s" data-cat="%s"><dt><a href="%s/">%s</a>'
+                        '<span class="chip">%s%s</span></dt><dd>%s</dd></div>' % (
+                            esc((t["name"] + " " + t["definition"]).lower()), c["slug"], slug(t["name"]), esc(t["name"]),
+                            icon(c["slug"], 13), esc(c["name"]), esc(t["definition"])))
+        body.append("</dl></section>")
+    body.append('<p class="empty" id="noresults" hidden>no terms match that search.</p></section>')
     body.append(cta("index"))
-    body.append("</div>")
+    body.append("</main>")
     jsonld = {"@context": "https://schema.org", "@type": "DefinedTermSet", "@id": BASE + "#set",
               "name": "Stingray fraud glossary", "url": BASE,
               "description": "E-commerce fraud and trust & safety terms for fraud analysts.",
-              "hasDefinedTerm": [{"@type": "DefinedTerm", "name": t["name"], "url": BASE + slug(t["name"]) + "/"}
-                                 for t in ctx["terms"]]}
+              "hasDefinedTerm": [{"@type": "DefinedTerm", "name": t["name"], "description": t["definition"],
+                                  "url": BASE + slug(t["name"]) + "/"} for t in ctx["terms"]]}
     return shell("Fraud glossary: e-commerce fraud and trust & safety terms | Stingray",
                  "Plain-English definitions of %d e-commerce fraud and trust & safety terms, from account takeover to "
                  "triangulation fraud, with how each scheme plays out and what fraud analysts look for." % len(ctx["terms"]),

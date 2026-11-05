@@ -160,3 +160,70 @@ article p{max-width:68ch}
 main,article{min-width:0}
 .swipe{display:none}
 @media (max-width:520px){.swipe{display:inline}}
+
+/* icons */
+.ico{flex:none;vertical-align:-3px}
+.cat-name{display:inline-flex;align-items:center;gap:8px}
+.cat-name .ico,.tag .ico{color:var(--teal)}
+.tag{display:inline-flex;align-items:center;gap:5px}
+
+/* index: pattern board + A-Z */
+.index{padding-block:36px 64px;gap:48px}
+.jump{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600}
+.jump a{color:#C9D8D5}
+.sec-h{display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:22px;font-weight:800;color:var(--ink)}
+.sec-h .ico{color:var(--teal)}
+.sec-p{margin:0 0 18px;color:var(--muted);font-size:14px;max-width:72ch}
+.board{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.board-head,.vrow{display:grid;grid-template-columns:220px 210px minmax(0,1fr);gap:24px;align-items:start;padding:16px 22px}
+.board-head{padding-block:10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+.vrow{border-bottom:1px solid var(--line)}
+.vrow:last-child{border-bottom:0}
+.vrow:hover{background:var(--bg)}
+.vname{font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;line-height:1.35;padding-top:2px}
+.vname:hover{color:var(--teal);text-decoration:underline}
+.vstat{display:grid;grid-template-columns:minmax(0,1fr) 22px 84px;gap:10px;align-items:center;padding-top:2px}
+.track{height:8px;border-radius:4px;background:var(--grid);overflow:hidden}
+.fill{display:block;height:100%;background:var(--chart);border-radius:4px}
+.num{font-weight:700;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.spark{width:84px;height:26px;display:block}
+.spark polyline{fill:none;stroke:var(--chart);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.spark .area{fill:var(--chart);opacity:.14}
+.spark .base{stroke:var(--line);stroke-width:1}
+.spark circle{fill:var(--chart);stroke:var(--surface);stroke-width:1.5}
+.vdef{margin:0;font-size:14px;max-width:70ch}
+.legend{margin:10px 2px 0;font-size:12px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:6px;border-radius:3px;background:var(--chart);vertical-align:middle;margin-right:6px}
+@media (max-width:820px){
+  .board-head{display:none}
+  .vrow{grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding:14px 16px}
+  .vstat{grid-template-columns:22px 84px}
+  .vstat .track{display:none}
+  .vdef{grid-column:1/-1}
+}
+.azbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.letters{display:flex;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:13px}
+.letters a,.letters span{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:5px;text-decoration:none}
+.letters a{color:var(--ink);font-weight:500}
+.letters a:hover{background:var(--teal-soft);color:var(--teal)}
+.letters span{color:var(--line)}
+.cfs{display:flex;flex-wrap:wrap;gap:6px}
+.cf{font:inherit;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.cf .ico{color:var(--teal)}
+.cf.on{background:var(--slate);border-color:var(--slate);color:#FFFFFF}
+.cf.on .ico{color:#9FD1CB}
+.letter{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;padding-top:22px;scroll-margin-top:110px}
+.letter h3{margin:0;font-size:30px;font-weight:800;color:var(--teal);line-height:1}
+.letter dl{margin:0;border-top:1px solid var(--line)}
+.entry{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;padding:14px 0;border-bottom:1px solid var(--line)}
+.entry dt{display:grid;gap:6px;align-content:start}
+.entry dt a{font-weight:700;color:var(--ink);text-decoration:none;line-height:1.35}
+.entry dt a:hover{color:var(--teal);text-decoration:underline}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);font-weight:600}
+.chip .ico{color:var(--teal)}
+.entry dd{margin:0;font-size:14px;max-width:70ch}
+@media (max-width:720px){
+  .letter{grid-template-columns:minmax(0,1fr)}
+  .entry{grid-template-columns:minmax(0,1fr);gap:4px}
+  .entry dt{grid-auto-flow:column;justify-content:space-between;align-items:baseline}
+}
