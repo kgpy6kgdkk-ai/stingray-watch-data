@@ -219,10 +219,14 @@ FOOT = """<footer class="site-foot"><div class="wrap">
     var nr=document.getElementById('noresults');if(nr)nr.hidden=any;
   }}
   if(q)q.addEventListener('input',apply);
+  function setCat(b){{cat=b.getAttribute('data-cf');document.querySelectorAll('.cf').forEach(function(x){{x.classList.toggle('on',x===b);}});apply();}}
   document.querySelectorAll('.cf').forEach(function(b){{b.addEventListener('click',function(){{
-    cat=b.getAttribute('data-cf');document.querySelectorAll('.cf').forEach(function(x){{x.classList.toggle('on',x===b);}});apply();
-    ev('glossary_filter',{{category:cat}});
+    setCat(b);ev('glossary_filter',{{category:cat}});
   }});}});
+  // Breadcrumb links land on /glossary/#<category>: turn that filter on (the browser scrolls to it).
+  function fromHash(){{var b=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if(b&&b.classList.contains('cf'))setCat(b);}}
+  fromHash();window.addEventListener('hashchange',fromHash);
   document.querySelectorAll('[data-rate] button').forEach(function(b){{
     b.addEventListener('click',function(){{
       b.parentNode.querySelectorAll('button').forEach(function(x){{x.setAttribute('aria-pressed',x===b?'true':'false');}});
@@ -262,6 +266,21 @@ def short(text, n=155):
     if len(text) <= n:
         return text
     return text[:n].rsplit(" ", 1)[0].rstrip(",;:—-") + "..."
+
+
+# A period that ends one of these doesn't end the sentence.
+ABBREV = re.compile(r"(?:\b(?:e\.g|i\.e|etc|vs|inc|ltd|co|corp|mr|mrs|ms|dr|st|no|approx|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)|\b[A-Za-z](?:\.[A-Za-z])*)\.$", re.I)
+
+
+def first_sentence(text):
+    """The first full sentence, never cut mid-word. Falls back to the whole text."""
+    text = " ".join(str(text or "").split())
+    for m in re.finditer(r"[.!?](?=\s+[\"'(\u201c]?[A-Za-z0-9])", text):
+        head = text[:m.end()]
+        if m.group() == "." and ABBREV.search(head):
+            continue
+        return head
+    return text
 
 
 def search_band(heading, sub):
@@ -312,17 +331,30 @@ def related_cards(names, by_name):
     out = ['<ul class="related">']
     for n in names:
         t = by_name[n]
-        out.append('<li><a href="/glossary/%s/"><b>%s</b><span>%s</span></a></li>' % (slug(n), esc(n), esc(t["definition"])))
+        out.append('<li><a href="/glossary/%s/"><b>%s</b><span>%s</span></a></li>' % (slug(n), esc(n), esc(first_sentence(t["definition"]))))
     out.append("</ul>")
     return "".join(out)
 
 
 def item_title(item):
     h = " ".join(str(item.get("headline", "")).split())
-    return h or short(item.get("text", ""), 110)
+    if h:
+        return h
+    # No headline on older archive items: use the first full sentence, or its
+    # first clause when the sentence is a long semicolon chain. Never cut mid-word.
+    s = first_sentence(item.get("text", ""))
+    if len(s) > 200 and "; " in s:
+        s = s.split("; ", 1)[0]
+    return s.rstrip(".")
 
 
 # ---------------------------------------------------------------- pages
+
+
+def crumb_anchor(cat_slug):
+    # The index has a #vectors section for the fraud vectors; every other
+    # category is a filter on the A-Z, and its button carries the category slug as its id.
+    return "vectors" if cat_slug == "fraud-vectors" else cat_slug
 
 
 def term_page(t, ctx):
@@ -336,7 +368,7 @@ def term_page(t, ctx):
     body.append(sidebar(ctx["cats"], ctx["by_cat"], s))
     body.append("<main>")
     body.append('<nav class="crumbs" aria-label="Breadcrumb"><a href="/glossary/">glossary</a><span>›</span>'
-                '<a href="/glossary/#%s">%s</a><span>›</span><span>%s</span></nav>' % (cat["slug"], esc(cat["name"]), esc(t["name"])))
+                '<a href="/glossary/#%s">%s</a><span>›</span><span>%s</span></nav>' % (crumb_anchor(cat["slug"]), esc(cat["name"]), esc(t["name"])))
     body.append("<article>")
     body.append("<h1>%s</h1>" % esc(t["name"]))
     tags = ['<span class="tag">%s%s</span>' % (icon(cat["slug"], 12), esc(cat["name"]))]
@@ -399,7 +431,7 @@ def term_page(t, ctx):
                                                 "name": "Stingray fraud glossary", "url": BASE}},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "glossary", "item": BASE},
-            {"@type": "ListItem", "position": 2, "name": cat["name"], "item": BASE + "#" + cat["slug"]},
+            {"@type": "ListItem", "position": 2, "name": cat["name"], "item": BASE + "#" + crumb_anchor(cat["slug"])},
             {"@type": "ListItem", "position": 3, "name": t["name"], "item": canonical}]}]}
     return shell(title, short(t["definition"]), canonical, jsonld, "".join(body), s)
 
@@ -452,12 +484,13 @@ def index_page(ctx):
     anchor = lambda L: "l-num" if L == "#" else "l-" + L
     letters = "".join('<a href="#%s">%s</a>' % (anchor(L), L) if L in groups else "<span>%s</span>" % L for L in alphabet)
     filters = '<button type="button" class="cf on" data-cf="all">all</button>' + "".join(
-        '<button type="button" class="cf" data-cf="%s">%s%s</button>' % (c["slug"], icon(c["slug"], 14), esc(c["name"]))
+        '<button type="button" class="cf" id="%s" data-cf="%s">%s%s</button>' % (c["slug"], c["slug"], icon(c["slug"], 14), esc(c["name"]))
         for c in ctx["cats"] if any(t["category"] == c["slug"] for t in others))
     body.append('<section id="az"><h2 class="sec-h">%s glossary A–Z <span class="n">%d</span></h2>' % (icon("a-z", 22), len(others)))
     body.append('<p class="sec-p">the rest of the vocabulary: payments, disputes, identity, scams and detection.</p>')
-    body.append('<div class="azbar"><nav class="letters" aria-label="Jump to letter">%s</nav>'
-                '<div class="cfs" role="group" aria-label="Filter by category">%s</div></div>' % (letters, filters))
+    # Category filters sit above the sticky bar so the bar stays one short row of letters.
+    body.append('<div class="cfs" role="group" aria-label="Filter by category">%s</div>' % filters)
+    body.append('<div class="azbar"><nav class="letters" aria-label="Jump to letter">%s</nav></div>' % letters)
     for L in alphabet:
         if L not in groups:
             continue

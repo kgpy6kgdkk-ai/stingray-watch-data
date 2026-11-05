@@ -4,7 +4,7 @@
    that passes the chroma and contrast checks on both surfaces. */
 :root{
   --bg:#F4F7F6; --surface:#FFFFFF; --ink:#1A211F; --fg:#1F2826; --muted:#5B6D6A; --line:#D7E1DF;
-  --slate:#314747; --teal:#3F7570; --teal-soft:#E3EFED; --coral:#E0482F; --on-accent:#FFFFFF;
+  --slate:#314747; --teal:#3C716C; --teal-soft:#E3EFED; --coral:#E0482F; --on-accent:#FFFFFF;
   --warn-bg:#FBF2DC; --warn-line:#D9A520; --tip-bg:#E3EFED; --tip-line:#578F8A;
   --bar:#1A211F; --bar-fg:#F4F7F6; --bar-muted:#9FB3B0; --chart:#00897B; --grid:#E6ECEB;
   --sans:Montserrat,"Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
@@ -79,7 +79,8 @@ article p{max-width:68ch}
 .edge.muted{stroke:var(--muted);stroke-dasharray:4 3}
 .edge.dash{stroke-dasharray:5 4}
 .badge circle{fill:var(--teal)}
-.badge.bad circle{fill:var(--coral)}
+.badge.bad circle{fill:#F25641}
+.badge.bad text{fill:#1A211F} /* ink on coral, like the primary button: white on coral is under 4.5:1 */
 .badge text{fill:var(--on-accent);font-family:var(--sans);font-size:11px;font-weight:700}
 @media (prefers-color-scheme:dark){.badge circle{fill:#3F7570}.badge text{fill:#FFFFFF}}
 .arrowhead{fill:var(--teal)}.arrowhead.bad{fill:var(--coral)}.arrowhead.muted{fill:var(--muted)}
@@ -130,7 +131,7 @@ article p{max-width:68ch}
 .related a,.cards a{display:block;height:100%;padding:12px 14px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--fg);background:var(--surface)}
 .related a:hover,.cards a:hover{border-color:var(--teal)}
 .related b,.cards b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
-.related span,.cards span{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.related span,.cards span{display:block;font-size:12.5px;line-height:1.5;color:var(--muted)}
 
 .cta{margin-top:34px;padding:20px 22px;border-radius:8px;background:var(--bar);color:var(--bar-fg);display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .cta p{margin:2px 0 0;font-size:14px;color:var(--bar-muted);max-width:52ch}
@@ -168,7 +169,7 @@ main,article{min-width:0}
 .tag{display:inline-flex;align-items:center;gap:5px}
 
 /* index: pattern board + A-Z */
-.index{padding-block:36px 64px;gap:48px}
+.index{padding-block:36px 64px;gap:48px;grid-template-columns:minmax(0,1fr)}
 .jump{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600}
 .jump a{color:#C9D8D5}
 .sec-h{display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:22px;font-weight:800;color:var(--ink)}
@@ -201,18 +202,24 @@ main,article{min-width:0}
   .vstat .track{display:none}
   .vdef{grid-column:1/-1}
 }
-.azbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);display:grid;gap:10px}
-.letters{display:flex;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:13px}
-.letters a,.letters span{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:5px;text-decoration:none}
+/* Sticky A-Z: one row of letters, ~49px tall at every width. On narrow screens
+   the row scrolls sideways instead of wrapping, so it never covers the entries. */
+.azbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line)}
+.letters{display:flex;gap:2px;font-family:var(--mono);font-size:13px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.letters::-webkit-scrollbar{display:none}
+@media (max-width:900px){.letters{padding-right:28px;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent)}}
+.letters a,.letters span{flex:none;display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:5px;text-decoration:none}
 .letters a{color:var(--ink);font-weight:500}
 .letters a:hover{background:var(--teal-soft);color:var(--teal)}
 .letters span{color:var(--line)}
-.cfs{display:flex;flex-wrap:wrap;gap:6px}
+.cfs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+/* breadcrumb arrivals (/glossary/#<category>) land on a filter button: keep the A-Z heading in view above it */
+.cf{scroll-margin-top:112px}
 .cf{font:inherit;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
 .cf .ico{color:var(--teal)}
 .cf.on{background:var(--slate);border-color:var(--slate);color:#FFFFFF}
 .cf.on .ico{color:#9FD1CB}
-.letter{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;padding-top:22px;scroll-margin-top:110px}
+.letter{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;padding-top:22px;scroll-margin-top:52px}
 .letter h3{margin:0;font-size:30px;font-weight:800;color:var(--teal);line-height:1}
 .letter dl{margin:0;border-top:1px solid var(--line)}
 .entry{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;padding:14px 0;border-bottom:1px solid var(--line)}
