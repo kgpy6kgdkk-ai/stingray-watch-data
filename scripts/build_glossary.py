@@ -122,18 +122,19 @@ def month_chart(vector_name, months, counts):
     return '<figure class="chart-wrap">%s%s</figure>' % ("".join(parts), table)
 
 
-def sparkline(counts, peak, months):
-    """Tiny trend line for the pattern board. All rows share one scale so they compare honestly."""
+def sparkline(counts, peak, months, cls="spark"):
+    """Tiny trend line for the pattern board. All rows share one scale so they compare honestly.
+    build_watch_glossary.py reuses it with its own class for the Watch overlay."""
     w, h, p = 84, 26, 3
     n = len(counts)
     xs = [p + (i * (w - 2 * p) / (n - 1) if n > 1 else (w - 2 * p) / 2) for i in range(n)]
     ys = [h - p - (h - 2 * p) * c / max(peak, 1) for c in counts]
     pts = " ".join("%.1f,%.1f" % xy for xy in zip(xs, ys))
     tip = ", ".join("%s %d" % (month_label(m), c) for m, c in zip(months, counts))
-    return ('<svg class="spark" viewBox="0 0 %d %d" role="img" aria-label="by month: %s"><title>by month: %s</title>'
+    return ('<svg class="%s" viewBox="0 0 %d %d" role="img" aria-label="by month: %s"><title>by month: %s</title>'
             '<line class="base" x1="%d" x2="%d" y1="%d" y2="%d"/><path class="area" d="M%.1f,%d L%s L%.1f,%d Z"/>'
             '<polyline points="%s"/><circle cx="%.1f" cy="%.1f" r="2.6"/></svg>') % (
-        w, h, tip, tip, p, w - p, h - p, h - p, xs[0], h - p, " L".join("%.1f,%.1f" % xy for xy in zip(xs, ys)),
+        cls, w, h, tip, tip, p, w - p, h - p, h - p, xs[0], h - p, " L".join("%.1f,%.1f" % xy for xy in zip(xs, ys)),
         xs[-1], h - p, pts, xs[-1], ys[-1])
 
 
@@ -441,16 +442,26 @@ def letter_of(name):
     return ch if ch.isalpha() else "#"
 
 
+def vector_board(ctx):
+    """The fraud vectors busiest first, with Watch counts and monthly series on one shared scale.
+    Shared by the glossary index and the Watch overlay (build_watch_glossary.py)."""
+    months = ctx["months"]
+    count = lambda t: len(ctx["items_by_vector"].get(t["vector"], []))
+    vectors = sorted((t for t in ctx["terms"] if t.get("vector")), key=lambda t: (-count(t), t["name"]))
+    rows = [(t, count(t), [ctx["month_counts"][t["vector"]].get(m, 0) for m in months]) for t in vectors]
+    peak = max([c for _, c, _ in rows] + [1])
+    spark_peak = max([max(series) for _, _, series in rows] + [1])
+    return rows, peak, spark_peak
+
+
 def index_page(ctx):
     """Reference-book index: a pattern board for the 12 vectors, then an A-Z of everything else."""
-    vectors = [t for t in ctx["terms"] if t.get("vector")]
+    board, peak, spark_peak = vector_board(ctx)
+    vectors = [t for t, _, _ in board]
     others = sorted((t for t in ctx["terms"] if not t.get("vector")), key=lambda t: t["name"].lower())
     count = lambda t: len(ctx["items_by_vector"].get(t["vector"], []))
-    vectors.sort(key=lambda t: (-count(t), t["name"]))
     months = ctx["months"]
-    peak = max([count(t) for t in vectors] + [1])
-    monthly = {t["vector"]: [ctx["month_counts"][t["vector"]].get(m, 0) for m in months] for t in vectors}
-    spark_peak = max([max(v) for v in monthly.values()] + [1])
+    monthly = {t["vector"]: series for t, _, series in board}
     span = "%s–%s" % (month_label(months[0]), month_label(months[-1]))
 
     body = [search_band("fraud glossary",
@@ -516,9 +527,9 @@ def index_page(ctx):
                  BASE, jsonld, "".join(body))
 
 
-def main():
-    repo = Path(__file__).resolve().parent.parent
-    out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else repo / "_site"
+def load_context(repo):
+    """Read glossary.json + archive.json into the shared context: terms, categories, Watch items
+    per vector and per month. Also used by build_watch_glossary.py so both outputs count the same way."""
     gloss = json.loads((repo / "glossary.json").read_text(encoding="utf-8"))
     archive = json.loads((repo / "archive.json").read_text(encoding="utf-8"))["items"]
     now = datetime.now(timezone.utc)
@@ -538,20 +549,27 @@ def main():
     for t in terms:
         month_counts.setdefault(t.get("vector"), Counter())
 
-    ctx = dict(repo=repo, cats=cats, terms=terms, by_name=by_name, by_cat=by_cat, updated=gloss["updated"],
-               cat_by_slug={c["slug"]: c for c in cats}, items_by_vector=items_by_vector,
-               month_counts=month_counts, months=months)
+    return dict(repo=repo, cats=cats, terms=terms, by_name=by_name, by_cat=by_cat, updated=gloss["updated"],
+                cat_by_slug={c["slug"]: c for c in cats}, items_by_vector=items_by_vector,
+                month_counts=month_counts, months=months)
+
+
+def main():
+    repo = Path(__file__).resolve().parent.parent
+    out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else repo / "_site"
+    ctx = load_context(repo)
+    terms = ctx["terms"]
 
     gdir = out_dir / "glossary"
     gdir.mkdir(parents=True, exist_ok=True)
     (gdir / "glossary.css").write_text((repo / "scripts" / "glossary.css").read_text(encoding="utf-8"), encoding="utf-8")
     (gdir / "index.html").write_text(index_page(ctx), encoding="utf-8")
-    urls = [(BASE, gloss["updated"])]
+    urls = [(BASE, ctx["updated"])]
     for t in terms:
         d = gdir / slug(t["name"])
         d.mkdir(exist_ok=True)
         (d / "index.html").write_text(term_page(t, ctx), encoding="utf-8")
-        urls.append((BASE + slug(t["name"]) + "/", gloss["updated"]))
+        urls.append((BASE + slug(t["name"]) + "/", ctx["updated"]))
     print("glossary: %d term pages" % len(terms))
 
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
