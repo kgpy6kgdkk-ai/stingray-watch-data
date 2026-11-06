@@ -113,4 +113,17 @@ Schema is a flat array under `items`, each entry the same shape as a `feed.json`
 - `terms`: `name`, `category` (a category slug), `definition`, and optionally `vector` (a `vectorTaxonomy` key; adds the monthly chart and "recent on Watch" list from `archive.json`), `related` (term names) and `explainer` (`context`, `steps` [{`title`, `body`}], `hard`, `lookFor`, `diagram` = a file in `diagrams/`).
 - `updated`: the "last updated" date shown on every page and in `sitemap.xml`. Bump it when you edit copy.
 
-Definitions are copied word for word from the glossary embed on Watch (it keeps its em-dashes on purpose). Until Watch reads this file directly, a definition change has to be made in both places. Explainer copy is written in the Stingray voice and has no em-dashes.
+Definitions keep their em-dashes on purpose (they came word for word from the original Watch glossary). Explainer copy is written in the Stingray voice and has no em-dashes.
+
+### The glossary overlay on Watch (Carrd embed 07)
+
+`glossary.json` is also the only copy of the definitions on Watch. `scripts/build_watch_glossary.py` turns it, plus `archive.json`, into the paste-ready embed 07: a compact version of the glossary index (the 12-vector board with Watch counts and sparklines, then the A-Z with category chips), styled by `scripts/watch_glossary.css` and wired by `scripts/watch_glossary.js`. It reuses the slug, icons, counting and sparkline from `build_glossary.py`, so both places agree.
+
+```
+python3 scripts/build_watch_glossary.py      # writes build/watch-embed07-glossary.html (gitignored)
+```
+
+- The embed carries full static markup, so crawlers and `#glossary-<slug>` deep links work before any fetch.
+- When a visitor opens the overlay, it fetches `archive.json` and `glossary.json` from raw.githubusercontent and refreshes counts, sparklines and definition wording in place. So a definition edit (with `updated` bumped, which is how the overlay notices) or a new Watch item shows up on Watch after the merge, with no Carrd change.
+- A new or renamed term does need a regenerate and a paste into embed 07 (follow `watch-deploy.md`: backup first, preview at 1280 and 390, then publish). Keep the element ids, `fsOpenGlossary`/`fsCloseGlossary`, `.fs-gloss-more`/`.fs-gloss-all` and the `glossary_open`/`glossary_page_click` events intact.
+- It isn't part of the Pages workflow and isn't published to feed.stingrayfraud.com.

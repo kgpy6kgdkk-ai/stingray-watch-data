@@ -1,0 +1,132 @@
+/* Stingray Watch glossary overlay (embed 07), inlined by build_watch_glossary.py. A compact version of
+   feed.stingrayfraud.com/glossary/: same board, sparkline, icons, chips and type
+   scale, in Watch's dark palette. Every selector is scoped to #glossary and every
+   class is fs-g-*, so the feed's .fs-row filter code can't reach these rows.
+   Kept: .fs-gloss-more / .fs-gloss-all (glossary_page_click), .fs-copy-btn. */
+#glossary{
+  --g-bg:#1A211F; --g-surface:#202927; --g-raise:#263230; --g-line:#314747; --g-line-soft:#2A3836;
+  --g-ink:#F4F7F6; --g-fg:#DCE6E4; --g-muted:#93A8A4; --g-accent:#8CC2BC; --g-teal:#578F8A;
+  --g-chart:#1F9E90; --g-track:#2A3836; --g-coral:#F25641;
+  --g-sans:Montserrat,"Helvetica Neue",Arial,sans-serif; --g-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --g-top:120px;
+  position:fixed;inset:0;z-index:9999;overflow-y:auto;overscroll-behavior:contain;
+  background:var(--g-bg);color:var(--g-fg);font-family:var(--g-sans);font-size:14px;line-height:1.6;
+  color-scheme:dark;-webkit-text-size-adjust:100%;
+}
+#glossary *{box-sizing:border-box}
+/* reset at class weight, before the component rules, so their padding wins */
+.fs-g :where(h2,h3,p,ul,li){margin:0;padding:0;list-style:none}
+#glossary a{color:var(--g-accent)}
+#glossary :focus-visible{outline:2px solid var(--g-coral);outline-offset:2px;border-radius:3px}
+#glossary [hidden],#glossary .fs-g-hide{display:none!important}
+.fs-g-ico{flex:none;vertical-align:-2px;color:var(--g-accent)}
+
+/* sticky top: header + search + letters */
+.fs-g-top{position:sticky;top:0;z-index:3;background:var(--g-bg);border-bottom:1px solid var(--g-line)}
+.fs-g-hdr{display:flex;align-items:center;gap:14px;background:var(--g-surface);border-bottom:1px solid var(--g-line);
+  padding:9px max(16px,env(safe-area-inset-right,0px)) 9px max(16px,env(safe-area-inset-left,0px))}
+.fs-g-title{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--g-ink)}
+.fs-g-count{font-family:var(--g-mono);font-size:11px;color:var(--g-muted);margin-left:auto}
+#glossary .fs-gloss-all{font-size:12px;font-weight:600;color:var(--g-accent);text-decoration:none;white-space:nowrap;border-bottom:1px solid var(--g-line)}
+#glossary .fs-gloss-all:hover{color:var(--g-ink);border-bottom-color:var(--g-teal)}
+.fs-g-back{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--g-raise);border:1px solid var(--g-teal);
+  border-radius:4px;color:var(--g-ink);font:600 12px/1 var(--g-sans);cursor:pointer}
+.fs-g-back:hover{background:var(--g-line)}
+.fs-g-find{max-width:1000px;margin:0 auto;display:grid;gap:8px;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+.fs-g-search{position:relative;display:block}
+.fs-g-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--g-muted)}
+#fs-glossary-search{width:100%;font:400 14px var(--g-sans);padding:9px 12px 9px 36px;border-radius:6px;
+  border:1px solid var(--g-line);background:var(--g-surface);color:var(--g-ink);outline:none;-webkit-appearance:none;appearance:none}
+#fs-glossary-search::placeholder{color:var(--g-muted)}
+#fs-glossary-search:focus{border-color:var(--g-accent)}
+.fs-g-letters{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;font-family:var(--g-mono);font-size:12.5px}
+.fs-g-letters::-webkit-scrollbar{display:none}
+.fs-g-letters button,.fs-g-letters span{flex:none;display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 4px;border-radius:4px}
+.fs-g-letters button{background:none;border:0;color:var(--g-ink);font:inherit;cursor:pointer}
+.fs-g-letters button:hover{background:var(--g-raise);color:var(--g-accent)}
+.fs-g-letters .fs-g-jv{font-family:var(--g-sans);font-size:12px;font-weight:600;color:var(--g-accent);padding:0 10px;margin-right:6px;border:1px solid var(--g-line)}
+.fs-g-letters span{color:#3B4C4A}
+
+/* body column */
+.fs-g-body{max-width:1000px;margin:0 auto;display:grid;gap:40px;
+  padding:24px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.fs-g-sec{scroll-margin-top:calc(var(--g-top) + 8px)}
+.fs-g-h{display:flex;align-items:center;gap:9px;font-size:17px!important;font-weight:800!important;color:var(--g-ink);text-transform:none;letter-spacing:0;line-height:1.3}
+.fs-g-n{font-family:var(--g-mono);font-size:11px;font-weight:400;color:var(--g-muted)}
+.fs-g-sub{margin-top:4px!important;color:var(--g-muted);font-size:13px;max-width:72ch}
+.fs-g-name{font-weight:700;font-size:14.5px;color:var(--g-ink);line-height:1.35}
+.fs-g-def{font-size:13.5px;line-height:1.6;color:var(--g-fg);max-width:70ch}
+/* rows: the lead clause in full brightness, the rest of the definition after it in muted text */
+.fs-g-tail{color:var(--g-muted)}
+#glossary .fs-gloss-more{font-size:11.5px;font-weight:600;color:var(--g-accent);text-decoration:none;white-space:nowrap;border-bottom:1px solid transparent;margin-left:4px}
+#glossary .fs-gloss-more:hover,#glossary .fs-gloss-more:focus-visible{color:var(--g-ink);border-bottom-color:var(--g-teal)}
+
+/* copy-link button (same behaviour as today, scoped look) */
+#glossary .fs-copy-btn{position:relative;flex:none;width:44px;height:44px;margin:-8px 0;display:inline-grid;place-items:center;
+  background:none;border:0;padding:0;cursor:pointer;color:var(--g-muted);opacity:.6;grid-area:copy;align-self:start}
+#glossary .fs-copy-btn:hover,#glossary .fs-copy-btn:focus-visible{opacity:1;color:var(--g-accent)}
+#glossary .fs-copy-btn .fs-copy-check{display:none}
+#glossary .fs-copy-btn.fs-copied .fs-copy-check{display:inline-block}
+#glossary .fs-copy-btn.fs-copied .fs-copy-icon{display:none}
+#glossary .fs-copy-tip{position:absolute;top:10px;right:42px;background:var(--g-bg);border:1px solid var(--g-teal);color:var(--g-ink);
+  font:600 10px var(--g-sans);padding:2px 6px;border-radius:3px;white-space:nowrap;opacity:0;pointer-events:none}
+#glossary .fs-copy-btn.fs-copied .fs-copy-tip{opacity:1}
+
+/* pattern board */
+.fs-g-board{margin-top:14px!important;background:var(--g-surface);border:1px solid var(--g-line);border-radius:8px}
+.fs-g-vrow{display:grid;grid-template-columns:minmax(0,1fr) 210px 44px;grid-template-areas:"name stat copy" "def stat copy";
+  column-gap:22px;row-gap:3px;padding:13px 6px 13px 18px;border-bottom:1px solid var(--g-line-soft);scroll-margin-top:calc(var(--g-top) + 12px)}
+.fs-g-vrow:last-child{border-bottom:0}
+.fs-g-vrow:hover{background:var(--g-raise)}
+.fs-g-vrow:hover .fs-copy-btn{opacity:1}
+.fs-g-vrow .fs-g-name{grid-area:name}
+.fs-g-vrow .fs-g-def{grid-area:def}
+.fs-g-vstat{grid-area:stat;display:grid;grid-template-columns:minmax(0,1fr) 24px 84px;gap:10px;align-items:center;align-self:start;padding-top:1px}
+.fs-g-track{height:6px;border-radius:3px;background:var(--g-track);overflow:hidden}
+.fs-g-fill{display:block;height:100%;background:var(--g-chart);border-radius:3px}
+.fs-g-num{font-weight:700;font-size:13px;color:var(--g-ink);text-align:right;font-variant-numeric:tabular-nums}
+.fs-g-spark{width:84px;height:26px;display:block;overflow:visible}
+.fs-g-spark polyline{fill:none;stroke:var(--g-chart);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.fs-g-spark .area{fill:var(--g-chart);opacity:.16}
+.fs-g-spark .base{stroke:var(--g-line);stroke-width:1}
+.fs-g-spark circle{fill:var(--g-chart);stroke:var(--g-surface);stroke-width:1.5}
+.fs-g-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px!important;font-size:11.5px;color:var(--g-muted)}
+.fs-g-legend i{display:inline-block;width:16px;height:6px;border-radius:3px;background:var(--g-chart);vertical-align:middle;margin-right:6px}
+
+/* A-Z */
+#fs-glossary-extended{margin-top:6px}
+.fs-g-letter{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;padding-top:18px;scroll-margin-top:var(--g-top)}
+.fs-g-letter h3{font-size:24px!important;font-weight:800!important;color:var(--g-teal);line-height:1.1}
+.fs-g-entries{border-top:1px solid var(--g-line)}
+.fs-g-entry{display:grid;grid-template-columns:230px minmax(0,1fr) 44px;grid-template-areas:"term def copy";gap:4px 22px;
+  padding:12px 0 12px;border-bottom:1px solid var(--g-line-soft);scroll-margin-top:calc(var(--g-top) + 12px)}
+.fs-g-entry:last-child{border-bottom:0}
+.fs-g-entry:hover .fs-copy-btn{opacity:1}
+.fs-g-term{grid-area:term;display:grid;gap:3px;align-content:start}
+.fs-g-entry .fs-g-def{grid-area:def}
+.fs-g-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--g-muted)}
+.fs-g-empty{padding:18px 0;color:var(--g-muted);font-size:13px}
+.fs-g-foot{border-top:1px solid var(--g-line);padding-top:18px!important;font-size:13px;color:var(--g-muted);max-width:80ch}
+
+/* deep-link arrival: one soft flash, nothing for reduced motion */
+#glossary .fs-row-highlight{animation:fsHighlightFlash 1.5s ease-out}
+@media (prefers-reduced-motion:reduce){#glossary .fs-row-highlight{animation:none;background:rgba(87,143,138,.18)}}
+
+@media (max-width:640px){
+  .fs-g-hdr{gap:10px}
+  .fs-g-count{display:none}
+  #glossary .fs-gloss-all{margin-left:auto}
+  .fs-g-title{font-size:12.5px}
+  .fs-g-letters{padding-right:24px;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent)}
+  .fs-g-body{gap:32px;padding-top:18px}
+  .fs-g-vrow{grid-template-columns:minmax(0,1fr) auto 36px;grid-template-areas:"name stat copy" "def def def";column-gap:10px;padding:12px 4px 12px 14px}
+  .fs-g-vstat{grid-template-columns:22px 64px;gap:8px}
+  .fs-g-vstat .fs-g-track{display:none}
+  .fs-g-spark{width:64px;height:22px}
+  .fs-g-letter{grid-template-columns:minmax(0,1fr);gap:2px}
+  .fs-g-letter h3{font-size:20px!important}
+  .fs-g-entry{grid-template-columns:minmax(0,1fr) 36px;grid-template-areas:"term copy" "def def";gap:4px 8px}
+  .fs-g-term{grid-auto-flow:row}
+  #glossary .fs-copy-btn{width:36px;opacity:.8}
+}
