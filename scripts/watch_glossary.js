@@ -4,9 +4,9 @@ var g=document.getElementById("glossary");if(!g)return;
 var RAW="__RAW__",loaded=false;
 function q(sel,root){return Array.prototype.slice.call((root||g).querySelectorAll(sel));}
 function setTop(){var t=g.querySelector(".fs-g-top");if(t)g.style.setProperty("--g-top",t.offsetHeight+"px");}
-window.fsCloseGlossary=function(){g.style.display="none";document.body.style.overflow="";};
+window.fsCloseGlossary=function(){g.style.display="none";document.body.style.overflow="";tvStop();};
 window.fsOpenGlossary=function(){if(window.gtag){gtag("event","glossary_open",{});}
-g.style.display="block";document.body.style.overflow="hidden";g.scrollTop=0;setTop();refresh();};
+g.style.display="block";document.body.style.overflow="hidden";g.scrollTop=0;setTop();refresh();tvStart();};
 window.addEventListener("resize",function(){if(g.style.display!=="none")setTop();});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&g.style.display!=="none"){window.fsCloseGlossary();}});
 
@@ -36,6 +36,39 @@ if(c){if(window.fsCopyLink)window.fsCopyLink(c.getAttribute("data-copy"),"","",c
 var a=e.target.closest&&e.target.closest("a.fs-gloss-more,a.fs-gloss-all");
 if(a&&window.gtag){gtag("event","glossary_page_click",{term_slug:a.getAttribute("data-term")||"all",link_url:a.href,link_domain:"feed.stingrayfraud.com"});}
 });
+
+/* glossary_term_view {term_slug, view_trigger}: which terms visitors actually read.
+   Nothing visible changes. At most one event per term per tab session (sessionStorage,
+   in-memory if that's blocked). Triggers:
+   - deep_link: the overlay opens on a #glossary-<slug> link (Watch's deep-link code opens it).
+   - dwell: one term at a time, the one under the reading line (45% down the overlay), stays
+     there for 3s while the overlay is open and the tab is visible. Counted only after the
+     visitor has scrolled, clicked, typed or searched in the overlay, so opening it, the
+     deep-link scroll, and scrolling past send nothing.
+   - search: the search narrows to exactly one term and the box settles for 1.2s.
+   The search text is never sent. */
+var TV_KEY="fsGlossSeen",TV_DWELL=3000,TV_SETTLE=1200,seen={},armed=0,cand=null,since=0,tick=null,settle=null;
+try{(JSON.parse(sessionStorage.getItem(TV_KEY))||[]).forEach(function(s){seen[s]=1;});}catch(e){}
+function termView(r,how){if(!r||!r.id||r.id.indexOf("glossary-")!==0||!g.contains(r))return;
+var s=r.id.slice(9);if(seen[s])return;seen[s]=1;
+try{sessionStorage.setItem(TV_KEY,JSON.stringify(Object.keys(seen)));}catch(e){}
+if(window.gtag){gtag("event","glossary_term_view",{term_slug:s,view_trigger:how});}}
+function arm(){if(!armed)armed=1;}
+function sample(){if(!armed||document.hidden||g.style.display==="none"){cand=null;return;}
+var b=g.querySelector(".fs-g-body").getBoundingClientRect(),gr=g.getBoundingClientRect();
+var el=document.elementFromPoint(b.left+b.width/2,gr.top+gr.height*0.45),r=el&&el.closest&&el.closest("[data-find]");
+if(!r||!g.contains(r))return; /* a gap between rows: keep the current candidate */
+var now=Date.now();if(r!==cand){cand=r;since=now;return;}
+if(now-since>=TV_DWELL){termView(r,"dwell");}}
+function tvStart(){armed=0;cand=null;
+var h=(location.hash||"").slice(1);if(h.indexOf("glossary-")===0)termView(document.getElementById(h),"deep_link");
+if(!tick)tick=setInterval(sample,500);}
+function tvStop(){clearInterval(tick);tick=null;clearTimeout(settle);cand=null;}
+/* armed by the visitor's own input only */
+["wheel","touchstart","pointerdown","keydown"].forEach(function(t){g.addEventListener(t,arm,{passive:true});});
+document.addEventListener("visibilitychange",function(){cand=null;});
+if(input)input.addEventListener("input",function(){arm();clearTimeout(settle);settle=setTimeout(function(){
+var v=q("[data-find]:not(.fs-g-hide)");if(input.value.trim()&&v.length===1)termView(v[0],"search");},TV_SETTLE);});
 
 /* live refresh on first open: counts + sparklines from archive.json, wording from glossary.json.
    The static markup is the fallback; if either fetch fails nothing changes. */
