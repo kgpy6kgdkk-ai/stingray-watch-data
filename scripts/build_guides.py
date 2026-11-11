@@ -75,7 +75,7 @@ TRACKER = {
     "file": "fraud-case-tracker.xlsx · ~95 KB",
     # SHA-256 of the exact file uploaded behind the steal form (Freddy S11). Rebuilding the file changes it,
     # so update this whenever the file is replaced.
-    "sha256": "9ddedd2ee6f5fde000dc8b1675256ddc7ea564596c40968b8f3e08cfba926d7d",
+    "sha256": "a02ef53cb39af3a4da070e4079b0bf7ebc6e59a302885215fbe8ad42296bc4cd",
     # Reciprocal links: each of these term pages carries a "guide" line pointing here (glossary.json).
     "related": ["chargebacks & disputes", "friendly fraud", "first-party fraud", "refund abuse", "representment",
                 "chargeback ratio"],
@@ -92,11 +92,11 @@ CASE_GROUPS = [
         ("Escalated to", "legal, payments, law enforcement, a senior analyst")]),
     ("links and signals", [
         ("Order or account reference", "your internal ID"), ("Amount at risk", ""),
-        ("Linked signals", "email domain, device, IP, shipping address, recorded as internal references"),
+        ("Linked signals", "email domain, device, IP or shipping address, by internal reference, not the raw value"),
         ("Related case IDs", "cases that look like the same person or ring"), ("Linked pattern ID", ""),
         ("Evidence location", "a ticket or folder reference, not the evidence itself")]),
-    ("chargeback block, optional", [
-        ("Due date", "turns coral 3 days out"), ("Dispute reason code", ""),
+    ("due date and disputes, optional", [
+        ("Due date", "the date you must respond by, coral from 3 days out until the case closes"), ("Dispute reason code", ""),
         ("Dispute stage", "inquiry through arbitration, then won, lost or accepted"), ("Customer contacted", "yes or no")]),
     ("decision and money", [
         ("Decision", "confirmed fraud, likely fraud, not fraud, inconclusive"), ("Action taken", ""),
@@ -124,10 +124,7 @@ HYGIENE = [
     ("never", "Full card numbers, CVV, bank account numbers, government IDs, passwords, one-time codes or reset links."),
     ("avoid", "Names, emails, phone numbers, full addresses and raw IPs. Use your internal order, account and reference IDs."),
     ("fine", "Your internal IDs, an email domain, a card's last 4 digits, a country or city."),
-    ("watch out for", "Version history: deleting a pasted card number doesn't remove it, because Google Sheets and "
-                      "OneDrive keep old versions. Suspicious links: write them defanged (hxxps://example[.]com). Pasted "
-                      "exports: paste as values only, because fraudsters plant formulas (starting with = or @) in names "
-                      "and notes on purpose."),
+    ("watch out for", "Version history: deleting a pasted card number doesn't remove it, because Google Sheets and OneDrive keep old versions. Suspicious links: write them defanged (hxxps://example[.]com), so nobody clicks one by accident. Pasted exports: paste as values only, because fraudsters plant formulas (starting with =, +, - or @) in names and notes on purpose."),
     ("the Patterns tab", "It describes how you catch fraud. Treat the file as confidential, share it with your team only, "
                          "and leave out exact rule thresholds, score cut-offs and rule IDs."),
 ]
@@ -198,14 +195,10 @@ def tracker_page(ctx, repo):
     body.append('<h2 id="inside">what\'s in the tracker</h2>')
     body.append("<p>One .xlsx file with six tabs. No macros, no external links, nothing your security team has to think "
                 "twice about before opening.</p>")
-    body.append('<div class="tk-official"><p><b>The official file is .xlsx only, with no macros.</b> If you were sent a '
-                '.xlsm, a .zip or anything that asks you to enable content, it isn\'t from us.</p>'
+    body.append('<div class="tk-official"><p><b>The official file is .xlsx only, with no macros.</b> If you got an .xlsm, a .zip or anything that asks you to enable content, it isn\'t from us.</p>'
                 '<p class="tk-hash"><span>SHA-256</span><code>%s</code></p></div>' % esc(g["sha256"]))
-    body.append(tab(1, "Start here", "What each tab is for, what every column means, and a short note on keeping "
-                                     "sensitive data out of a shared file."))
-    body.append(tab(2, "Cases", "One row per case, from the moment it's opened to the decision and what was recovered, "
-                                "with the columns in the order you work a case. The chargeback block is grouped, so a "
-                                "team that doesn't work disputes can fold it away with one click. The columns:", cols))
+    body.append(tab(1, "Start here", "What each tab is for, what every column means, and a plain list of what to keep out of a file your team shares."))
+    body.append(tab(2, "Cases", "One row per case, from the moment it's opened to the decision and the money, with the columns in the order you work a case. The due date and dispute columns are grouped, so a team that never works disputes can fold them away with one click, but keep them open if anything you handle has a response deadline. The columns:", cols))
     body.append(tab(3, 'Patterns <span class="tk-pill">the heart of it</span>',
                     "This is the tab most trackers don't have, and the one we'd keep if we could only keep one. Each row "
                     "is a pattern your team has worked out: when you first and last saw it, the signals that identify it, "
@@ -226,15 +219,11 @@ def tracker_page(ctx, repo):
 <p class="tk-cap">The Patterns tab with the template's sample rows. The file also has fraud type, first seen, last seen, how it was confirmed, worked out by and last reviewed. Grey cells calculate themselves.</p>""" % rows)
     body.append('<figure class="diagram">%s<figcaption>How cases link to patterns inside the tracker.'
                 '<span class="swipe"> swipe sideways to see all of it.</span></figcaption></figure>' % diagram)
-    body.append(tab(4, "Decision log", "Timestamp, case ID, who decided, the decision it changed from and to, why, the "
-                                       "evidence it was based on, and who approved it. The first decision gets logged "
-                                       "too, not just later changes. In a spreadsheet you fill this in by hand, and "
+    body.append(tab(4, "Decision log", "Timestamp, case ID, who decided, the decision before and after, why, the evidence it was based on, and who signed it off if your team wants a second pair of eyes. The first decision gets logged too, not just later changes, and status changes stay on the case. In a spreadsheet you fill this in by hand, and "
                                        "we'll be honest that it only works if everyone remembers to do it, but a team "
                                        "that keeps it can answer \"why did we close this?\" months later."))
-    body.append(tab(5, "Weekly view", "Formulas only, nothing to type: what's due in the next 7 days and what's past "
-                                      "due, open cases by status and fraud type, average days open, gross loss, "
-                                      "recovered, net loss and prevented on confirmed fraud, not-fraud decisions by "
-                                      "source (your false positives), and the patterns with the most linked cases. It's "
+    body.append(tab(5, "Weekly view", "Formulas only, nothing to type: what's due in the next 7 days and what's already past due, open cases by status and fraud type, average days open, gross loss, "
+                                      "recovered, net loss and prevented on confirmed fraud, this month's not-fraud decisions by source (your false positives), and the patterns with the most linked cases. It's "
                                       "the page you'd screenshot for a Monday check-in."))
     body.append(tab(6, "Lists", "Every dropdown value in one place, so you can rename statuses or add a fraud type that "
                                 "fits your business without touching a formula."))
@@ -242,8 +231,7 @@ def tracker_page(ctx, repo):
                 'addresses, IDs marked SAMPLE), so delete them and start fresh.</p></div>')
 
     body.append('<h2 id="data">a note on what goes in the sheet</h2>')
-    body.append("<p>A shared spreadsheet is the wrong place for full card numbers, government IDs or a customer's full "
-                "personal details. The tracker is built around your internal order and account IDs, so the detail stays "
+    body.append("<p>A shared spreadsheet is the wrong place for card numbers, government IDs or a customer's contact details, even one email at a time. The tracker is built around your internal order and account IDs, so the detail stays "
                 "in the systems designed to protect it and the sheet holds the investigation. The Start here tab spells "
                 "it out:</p>")
     body.append('<div class="callout warn"><h3>keep sensitive data out of the file</h3><dl class="tk-hygiene">%s</dl></div>' % "".join(
@@ -289,7 +277,7 @@ INDEX_DESC = ("Practical guides and free tools for fraud analysts, starting with
 def index_page(ctx, guides):
     body = ["""<section class="band tk-band"><div class="wrap">
   <h1 class="band-title">guides</h1>
-  <p>practical guides and free tools for fraud analysts. read every one here before you download anything.</p>
+  <p>practical guides and free tools for fraud analysts. read the whole thing here, and only fill in a form if you want the file.</p>
 </div></section>
 <main class="wrap index">
 <section><ul class="tk-list">"""]
