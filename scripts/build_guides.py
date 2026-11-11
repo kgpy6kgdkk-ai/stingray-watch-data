@@ -75,7 +75,7 @@ TRACKER = {
     "file": "fraud-case-tracker.xlsx · ~95 KB",
     # SHA-256 of the exact file uploaded behind the steal form (Freddy S11). Rebuilding the file changes it,
     # so update this whenever the file is replaced.
-    "sha256": "a02ef53cb39af3a4da070e4079b0bf7ebc6e59a302885215fbe8ad42296bc4cd",
+    "sha256": "b0d3f1ab5f40254a35181823c9156f74c8987dedd975f775f3738615a99ea659",
     # Reciprocal links: each of these term pages carries a "guide" line pointing here (glossary.json).
     "related": ["chargebacks & disputes", "friendly fraud", "first-party fraud", "refund abuse", "representment",
                 "chargeback ratio"],
