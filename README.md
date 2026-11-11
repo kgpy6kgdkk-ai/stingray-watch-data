@@ -112,8 +112,18 @@ Schema is a flat array under `items`, each entry the same shape as a `feed.json`
 - `categories`: sidebar groups (`slug`, `name`, `intro`).
 - `terms`: `name`, `category` (a category slug), `definition`, and optionally `vector` (a `vectorTaxonomy` key; adds the monthly chart and "recent on Watch" list from `archive.json`), `related` (term names) and `explainer` (`context`, `steps` [{`title`, `body`}], `hard`, `lookFor`, `diagram` = a file in `diagrams/`).
 - `updated`: the "last updated" date shown on every page and in `sitemap.xml`. Bump it when you edit copy.
+- `guide` (optional): a one-line pointer from the term page to a guide, `{"slug": "fraud-case-tracker", "line": "... a [free fraud case tracker template]."}`. The text in [brackets] becomes the link; vary it between terms so the anchors aren't identical. Clicks send `glossary_cta` with target `guide_<slug>`.
 
 Definitions keep their em-dashes on purpose (they came word for word from the original Watch glossary). Explainer copy is written in the Stingray voice and has no em-dashes.
+
+## Guides (feed.stingrayfraud.com/guides/)
+
+`scripts/build_guides.py` builds practical guides next to the glossary: `/guides/` (the list) and one page per guide, starting with `/guides/fraud-case-tracker/`. `build_glossary.py` calls it from `main()`, so the Pages workflow needs no extra step and the guide URLs land in the same `sitemap.xml`. Pages reuse the glossary shell (top bar, GA4, LinkedIn Insight Tag); guide-only styles live in `scripts/guides.css` (classes prefixed `tk-`), and diagrams in `diagrams/`.
+
+- Guide copy lives in `build_guides.py` (the `TRACKER` dict and the page function). Bump its `updated` when the copy changes.
+- The tracker file itself is **not** in this repo, on purpose: it sits behind the form on steal.stingrayfraud.com (`#tracker`). Every "get the template" button links there with UTM tags.
+- `TRACKER["sha256"]` is published on the page so people can check the file. Whenever the hosted .xlsx is replaced, update the hash to match the uploaded file.
+- Events: `guide_cta` {guide, target} on every `data-cta` link, `guide_helpful` {guide, answer}.
 
 ### The glossary overlay on Watch (Carrd embed 07)
 
