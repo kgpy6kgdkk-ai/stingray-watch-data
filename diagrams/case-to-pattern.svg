@@ -1,0 +1,26 @@
+<svg viewBox="0 0 640 214" role="img" aria-labelledby="dg-t dg-d">
+  <title id="dg-t">How a case links to a pattern in the tracker</title>
+  <desc id="dg-d">Two cases on the Cases tab carry Pattern ID SAMPLE-P-002, typed by hand. The Patterns tab counts them with a formula, showing 2 linked cases. The Weekly view ranks patterns by that count.</desc>
+  <g class="node"><rect x="10" y="30" width="180" height="104" rx="8"/>
+    <text x="26" y="56">Cases</text>
+    <text class="sub" x="26" y="80">SAMPLE-0001 · P-002</text>
+    <text class="sub" x="26" y="100">SAMPLE-0004 · P-002</text>
+    <text class="sub" x="26" y="120">SAMPLE-0002 · (none yet)</text></g>
+  <g class="node"><rect x="240" y="30" width="170" height="104" rx="8"/>
+    <text x="256" y="56">Patterns</text>
+    <text class="sub" x="256" y="80">SAMPLE-P-002</text>
+    <text class="sub" x="256" y="100">linked cases: 2</text>
+    <text class="sub" x="256" y="120">counted by formula</text></g>
+  <g class="node"><rect x="460" y="30" width="170" height="104" rx="8"/>
+    <text x="476" y="56">Weekly view</text>
+    <text class="sub" x="476" y="80">top patterns by</text>
+    <text class="sub" x="476" y="100">linked cases</text>
+    <text class="sub" x="476" y="120">P-002 first</text></g>
+  <path class="edge" d="M190 82 H236" marker-end="url(#ah)"/>
+  <path class="edge" d="M410 82 H456" marker-end="url(#ah)"/>
+  <text class="lbl" x="213" y="74" text-anchor="middle">ID</text>
+  <text class="lbl" x="433" y="74" text-anchor="middle">count</text>
+  <path class="edge muted" d="M100 134 V170 H325 V138" marker-end="url(#ahm)"/>
+  <text class="lbl" x="212" y="190" text-anchor="middle">you type the Pattern ID on each case by hand</text>
+  <text class="lbl" x="212" y="206" text-anchor="middle">(this is the step a spreadsheet can't do for you)</text>
+</svg>

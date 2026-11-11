@@ -234,3 +234,8 @@ main,article{min-width:0}
   .entry{grid-template-columns:minmax(0,1fr);gap:4px}
   .entry dt{grid-auto-flow:column;justify-content:space-between;align-items:baseline}
 }
+
+/* one-line pointer from a term page to a guide (glossary.json "guide") */
+.guide-link{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;align-items:start;margin:22px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-size:14px;max-width:none}
+.guide-link .ico{color:var(--teal);margin-top:2px}
+.guide-link a{font-weight:700}

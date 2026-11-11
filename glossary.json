@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-03",
+  "updated": "2026-11-10",
   "categories": [
     {
       "slug": "fraud-vectors",
@@ -220,6 +220,10 @@
           "a dispute ratio creeping toward the card network thresholds"
         ],
         "diagram": "chargebacks-disputes.svg"
+      },
+      "guide": {
+        "slug": "fraud-case-tracker",
+        "line": "Keep every dispute and the pattern behind it in one place with a [free fraud case tracker template]."
       }
     },
     {
@@ -377,6 +381,10 @@
           "returned packages that weigh less than what shipped",
           "claims that reuse the same script or wording across accounts"
         ]
+      },
+      "guide": {
+        "slug": "fraud-case-tracker",
+        "line": "Refund abuse rarely shows up as one case, so a [case tracker that links cases to patterns] helps you see the repeat."
       }
     },
     {
@@ -569,22 +577,38 @@
     {
       "name": "chargeback ratio",
       "category": "disputes-and-returns",
-      "definition": "the percentage of a merchant's transactions that result in a chargeback; card networks fine or terminate merchants whose ratio exceeds set thresholds, which is why chargeback prevention is treated as an existential metric, not just a cost center."
+      "definition": "the percentage of a merchant's transactions that result in a chargeback; card networks fine or terminate merchants whose ratio exceeds set thresholds, which is why chargeback prevention is treated as an existential metric, not just a cost center.",
+      "guide": {
+        "slug": "fraud-case-tracker",
+        "line": "Watching your ratio? Start by tracking the cases behind it in a [free fraud case tracker]."
+      }
     },
     {
       "name": "first-party fraud",
       "category": "disputes-and-returns",
-      "definition": "fraud committed by the actual account holder against the merchant or issuer — friendly fraud, application fraud using one's own real identity, bust-out fraud — as opposed to a criminal impersonating someone else."
+      "definition": "fraud committed by the actual account holder against the merchant or issuer — friendly fraud, application fraud using one's own real identity, bust-out fraud — as opposed to a criminal impersonating someone else.",
+      "guide": {
+        "slug": "fraud-case-tracker",
+        "line": "Track first-party cases and link them to the patterns they share with this [free case tracker spreadsheet]."
+      }
     },
     {
       "name": "friendly fraud",
       "category": "disputes-and-returns",
-      "definition": "a cardholder disputes a legitimate charge they actually authorized — sometimes by genuine mistake or forgotten subscription, sometimes deliberately to get goods for free — and is generally considered the single largest driver of chargebacks industry-wide."
+      "definition": "a cardholder disputes a legitimate charge they actually authorized — sometimes by genuine mistake or forgotten subscription, sometimes deliberately to get goods for free — and is generally considered the single largest driver of chargebacks industry-wide.",
+      "guide": {
+        "slug": "fraud-case-tracker",
+        "line": "Seeing the same customer behaviour come back? Log it once in a [fraud case tracker with a patterns tab]."
+      }
     },
     {
       "name": "representment",
       "category": "disputes-and-returns",
-      "definition": "a merchant's formal response disputing a chargeback, submitting evidence (delivery confirmation, IP logs, prior order history) that the original transaction was legitimate."
+      "definition": "a merchant's formal response disputing a chargeback, submitting evidence (delivery confirmation, IP logs, prior order history) that the original transaction was legitimate.",
+      "guide": {
+        "slug": "fraud-case-tracker",
+        "line": "Keep the decision and the evidence notes for each dispute together in a [free fraud case tracker template]."
+      }
     },
     {
       "name": "return fraud",

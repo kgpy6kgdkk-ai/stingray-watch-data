@@ -6,6 +6,7 @@ Writes to the output directory (default: _site), next to the RSS feeds:
                                   counts + sparklines) and an A-Z of every other term
   glossary/<slug>/index.html      one page per term
   glossary/glossary.css           shared styles
+  guides/...                      practical guides, built by build_guides.py
   sitemap.xml, robots.txt         for search engines
 
 glossary.json is the source of truth for terms, categories and explainer copy.
@@ -179,7 +180,7 @@ HEAD = """<!doctype html>
 <link rel="alternate" type="application/rss+xml" title="Stingray Watch" href="{site}rss.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="{root}glossary/glossary.css">
+<link rel="stylesheet" href="{root}glossary/glossary.css">{extra_css}
 <script async src="https://www.googletagmanager.com/gtag/js?id={ga}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga}');</script>
 <script type="text/javascript">_linkedin_partner_id="{li}";window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];window._linkedin_data_partner_ids.push(_linkedin_partner_id);</script>
@@ -187,21 +188,24 @@ HEAD = """<!doctype html>
 <script type="application/ld+json">{jsonld}</script>
 </head><body>
 <header class="bar"><div class="wrap">
-  <a class="brand" href="{root}glossary/">stingray <span>glossary</span></a>
+  <a class="brand" href="{brand_href}">stingray <span>{brand_label}</span></a>
   <nav class="nav" aria-label="Stingray">
     <a href="{watch}" data-cta="nav_watch">watch</a>
     <a href="{root}glossary/">glossary</a>
+    <a href="{root}guides/">guides</a>
     <a href="{site}">rss</a>
     <a href="{stingray}" data-cta="nav_stingray">stingray</a>
   </nav>
 </div></header>
 """
 
-FOOT = """<footer class="site-foot"><div class="wrap">
+SITE_FOOT = """<footer class="site-foot"><div class="wrap">
   <span>Stingray Fraud Intelligence · case management, rebuilt for investigators</span>
   <span><a href="{watch}">Stingray Watch</a> · <a href="{site}">rss</a> · <a href="{stingray}">stingrayfraud.com</a></span>
 </div></footer>
-<div class="gtip" id="tip" role="tooltip" hidden></div>
+"""
+
+FOOT = SITE_FOOT + """<div class="gtip" id="tip" role="tooltip" hidden></div>
 <script>
 (function(){{
   function ev(n,p){{if(typeof gtag==='function')gtag('event',n,p||{{}});}}
@@ -253,13 +257,18 @@ FOOT = """<footer class="site-foot"><div class="wrap">
 """
 
 
-def shell(title, desc, canonical, jsonld, body, term_slug=""):
+def shell(title, desc, canonical, jsonld, body, term_slug="", brand=("glossary", "/glossary/"), extra_css="", foot=None):
+    """Page shell shared by the glossary and the guides (build_guides.py passes its own brand,
+    stylesheet and footer script). Every page gets GA4 and the LinkedIn Insight Tag from HEAD."""
+    css = "".join('\n<link rel="stylesheet" href="%s">' % esc(c) for c in ([extra_css] if extra_css else []))
     head = HEAD.format(title=esc(title), desc=esc(desc), canonical=esc(canonical), site=SITE, root="/",
                        ga=GA_ID, li=LINKEDIN_PARTNER_ID, jsonld=json.dumps(jsonld, ensure_ascii=False).replace("</", "<\\/"),
-                       watch=utm(WATCH_URL, "nav"), stingray=utm(STINGRAY_URL, "nav"))
+                       watch=utm(WATCH_URL, "nav"), stingray=utm(STINGRAY_URL, "nav"),
+                       brand_label=esc(brand[0]), brand_href=esc(brand[1]), extra_css=css)
     if term_slug:
         head = head.replace("<body>", '<body data-term="%s">' % esc(term_slug), 1)
-    return head + body + FOOT.format(watch=utm(WATCH_URL, "footer"), site=SITE, stingray=utm(STINGRAY_URL, "footer"))
+    return head + body + (foot if foot is not None else FOOT).format(
+        watch=utm(WATCH_URL, "footer"), site=SITE, stingray=utm(STINGRAY_URL, "footer"))
 
 
 def short(text, n=155):
@@ -319,6 +328,22 @@ def cta(term_slug):
   <div><strong>solved one of these before?</strong><p>Stingray keeps the case, the pattern and what you figured out in one place, so the next analyst starts where you left off.</p></div>
   <div class="btns"><a class="btn primary" href="%s" data-cta="stingray">see how Stingray works</a><a class="btn ghost" href="%s" data-cta="sop">steal our chargebacks SOP</a></div>
 </div>""" % (esc(utm(STINGRAY_URL, term_slug)), esc(utm(SOP_URL, term_slug)))
+
+
+GUIDE_ICON = ('<svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+              'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2"/>'
+              '<path d="M3.5 9h17M9 9v11"/></svg>')
+
+
+def guide_line(g):
+    """One sentence pointing to a guide. glossary.json marks the link text with [brackets]:
+    {"slug": "fraud-case-tracker", "line": "... in a [free fraud case tracker template]."}"""
+    m = re.match(r"^(.*?)\[(.+?)\](.*)$", g["line"])
+    if not m:
+        raise ValueError("guide line needs [link text]: %r" % g["line"])
+    before, anchor, after = m.groups()
+    return '<p class="guide-link">%s<span>%s<a href="/guides/%s/" data-cta="guide_%s">%s</a>%s</span></p>' % (
+        GUIDE_ICON, esc(before), esc(slug(g["slug"])), esc(slug(g["slug"]).replace("-", "_")), esc(anchor), esc(after))
 
 
 def foot_meta(updated):
@@ -417,6 +442,8 @@ def term_page(t, ctx):
     related = t.get("related") or [n["name"] for n in ctx["by_cat"][t["category"]] if n["name"] != t["name"]][:6]
     body.append("<h2>related terms</h2>")
     body.append(related_cards(related, ctx["by_name"]))
+    if t.get("guide"):
+        body.append(guide_line(t["guide"]))
     body.append(cta(s))
     body.append(foot_meta(ctx["updated"]))
     body.append("</article></main></div>")
@@ -571,6 +598,9 @@ def main():
         (d / "index.html").write_text(term_page(t, ctx), encoding="utf-8")
         urls.append((BASE + slug(t["name"]) + "/", ctx["updated"]))
     print("glossary: %d term pages" % len(terms))
+
+    import build_guides  # sibling module; imports this one, so import it here, not at the top
+    urls += build_guides.build(out_dir, ctx)
 
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
           "  <url><loc>%s</loc></url>" % SITE]
