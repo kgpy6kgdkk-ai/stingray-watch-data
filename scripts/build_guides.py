@@ -67,15 +67,15 @@ def page(title, desc, canonical, jsonld, body, guide_slug="index"):
 TRACKER = {
     "slug": "fraud-case-tracker",
     "name": "free fraud case tracker",
-    "updated": "2026-11-10",
+    "updated": "2026-11-11",
     "title": "Free Fraud Case Tracker Template for Fraud Analysts",
     "desc": "A free fraud case tracker spreadsheet with a patterns tab, decision log and weekly view. No macros. "
             "Plus the signs you've outgrown it.",
     "h1": "A free fraud case tracker, and how to tell when you've outgrown it",
-    "file": "fraud-case-tracker.xlsx · ~95 KB",
+    "file": "fraud-case-tracker.xlsx · ~110 KB",
     # SHA-256 of the exact file uploaded behind the steal form (Freddy S11). Rebuilding the file changes it,
     # so update this whenever the file is replaced.
-    "sha256": "b0d3f1ab5f40254a35181823c9156f74c8987dedd975f775f3738615a99ea659",
+    "sha256": "777dcf329df708e25a8ccb0ce05bd15f031d52944fa013d48dccddea80052695",
     # Reciprocal links: each of these term pages carries a "guide" line pointing here (glossary.json).
     "related": ["chargebacks & disputes", "friendly fraud", "first-party fraud", "refund abuse", "representment",
                 "chargeback ratio"],
@@ -93,7 +93,10 @@ CASE_GROUPS = [
     ("links and signals", [
         ("Order or account reference", "your internal ID"), ("Amount at risk", ""),
         ("Linked signals", "email domain, device, IP or shipping address, by internal reference, not the raw value"),
-        ("Related case IDs", "cases that look like the same person or ring"), ("Linked pattern ID", ""),
+        ("Related case IDs", "cases that look like the same person or ring"),
+        ("Linked pattern ID", "a dropdown of your Pattern IDs, or NONE if you checked and it isn't one"),
+        ("Pattern check", "calc: asks whether a fraud case with related cases belongs to a pattern, and catches a "
+                           "mistyped Pattern ID"),
         ("Evidence location", "a ticket or folder reference, not the evidence itself")]),
     ("due date and disputes, optional", [
         ("Due date", "the date you must respond by, coral from 3 days out until the case closes"), ("Dispute reason code", ""),
@@ -150,8 +153,9 @@ def tracker_page(ctx, repo):
     cols = "".join(
         '<h4 class="tk-group%s">%s</h4><ul class="tk-cols">%s</ul>' % (
             " opt" if "optional" in group else "", esc(group),
-            "".join('<li%s><b>%s</b>%s</li>' % (' class="calc"' if note == "calc" else "", esc(name),
-                                                " <span>%s</span>" % esc(note) if note and note != "calc" else "")
+            "".join('<li%s><b>%s</b>%s</li>' % (' class="calc"' if note.startswith("calc") else "", esc(name),
+                                                " <span>%s</span>" % esc(note[6:] if note.startswith("calc: ") else note)
+                                                if note and note != "calc" else "")
                     for name, note in items))
         for group, items in CASE_GROUPS)
     rows = "".join(
@@ -208,7 +212,8 @@ def tracker_page(ctx, repo):
                     "should live.", '<p>Each pattern also gets its legit look-alikes, the innocent customers who can '
                     'look like it and how to tell them apart, and a last reviewed date that turns yellow when an active '
                     'playbook hasn\'t been checked in 90 days. First seen and last seen fill themselves in from the '
-                    'linked cases.</p>', heart=True, anchor="patterns"))
+                    'linked cases. Cases you cleared as not fraud don\'t count toward a pattern; they show up as '
+                    'cleared look-alikes instead, a nudge to write down how to tell them apart.</p>', heart=True, anchor="patterns"))
     body.append("""<figure class="tk-sheet" aria-label="Preview of the Patterns tab with the template's sample rows">
   <div class="tk-sheet-bar" aria-hidden="true"><span>Start here</span><span>Cases</span><span class="on">Patterns</span><span>Decision log</span><span>Weekly view</span><span>Lists</span></div>
   <div class="tk-scroll" tabindex="0" aria-label="Patterns tab, scrolls sideways">
@@ -223,7 +228,7 @@ def tracker_page(ctx, repo):
                                        "we'll be honest that it only works if everyone remembers to do it, but a team "
                                        "that keeps it can answer \"why did we close this?\" months later."))
     body.append(tab(5, "Weekly view", "Formulas only, nothing to type: what's due in the next 7 days and what's already past due, open cases by status and fraud type, average days open, gross loss, "
-                                      "recovered, net loss and prevented on confirmed fraud, this month's not-fraud decisions by source (your false positives), and the patterns with the most linked cases. It's "
+                                      "recovered, net loss and prevented on confirmed fraud, this month's not-fraud decisions by source (your false positives), the patterns with the most linked cases, and the clusters worth talking through: fraud cases this week that share something with other cases but aren't tied to a pattern yet. It's "
                                       "the page you'd screenshot for a Monday check-in."))
     body.append(tab(6, "Lists", "Every dropdown value in one place, so you can rename statuses or add a fraud type that "
                                 "fits your business without touching a formula."))
