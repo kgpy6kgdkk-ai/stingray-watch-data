@@ -122,6 +122,23 @@ have evolved since this file was written. Do not proceed until you've read it.
      README.md before categorizing anything** — the marketplace/highrisk
      split is easy to get backwards (a StockX counterfeit story is
      `highrisk`, not `marketplace`, even though StockX is a marketplace).
+   - **Advocacy and seller-advocate outlets** (e.g. Value Added Resource,
+     valueaddedresource.net; approved by Jared 2026-11-18 after a creative
+     review). Their facts are usable but their framing is not ours:
+     1. Write our own neutral headline and never reuse the outlet's framing.
+     2. Attribute community claims to whoever made them ("sellers report",
+        "one buyer reported"). State platform policy as fact only when you
+        can link the platform's own page.
+     3. For plain policy changes (bans, thresholds, authentication windows),
+        link the platform's own announcement when one exists. Link the
+        outlet only when it did the original reporting.
+     4. Check the link has no paywall. Skip "Paid Members" posts.
+     5. Keep any one outlet to about 25% of the `marketplace` panel. Count
+        the outlet's live items before adding another. Let its share drop
+        as items age out of the 90-day window, and never remove items just
+        to meet the cap.
+     6. Every `marketplace` item needs a fraud or risk angle for
+        investigators, not just a seller-policy complaint.
 
 4. **Format each selected item** per `README.md`'s schema: `tag`, `vector`
    (must be an existing key in `vectorTaxonomy` in `feed.json` — only add a
