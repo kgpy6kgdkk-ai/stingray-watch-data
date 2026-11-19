@@ -210,6 +210,11 @@ FOOT = SITE_FOOT + """<div class="gtip" id="tip" role="tooltip" hidden></div>
 (function(){{
   function ev(n,p){{if(typeof gtag==='function')gtag('event',n,p||{{}});}}
   var page=document.body.getAttribute('data-term')||'index';
+  // glossary_term_view: same event and term_slug as Watch's embed 07, so both fill the "Glossary Term"
+  // dimension. A term page sends it once per term per tab session (view_trigger 'page').
+  if(page!=='index'){{var seen=[];try{{seen=JSON.parse(sessionStorage.getItem('fsGlossSeen'))||[];}}catch(e){{}}
+    if(seen.indexOf(page)<0){{seen.push(page);try{{sessionStorage.setItem('fsGlossSeen',JSON.stringify(seen));}}catch(e){{}}
+      ev('glossary_term_view',{{term_slug:page,view_trigger:'page'}});}}}}
   var q=document.getElementById('q'),cat='all';
   function apply(){{
     var f=q.value.trim().toLowerCase(),any=false;
@@ -236,11 +241,11 @@ FOOT = SITE_FOOT + """<div class="gtip" id="tip" role="tooltip" hidden></div>
     b.addEventListener('click',function(){{
       b.parentNode.querySelectorAll('button').forEach(function(x){{x.setAttribute('aria-pressed',x===b?'true':'false');}});
       var t=b.parentNode.querySelector('.thanks');if(t)t.hidden=false;
-      ev('glossary_helpful',{{term:page,answer:b.getAttribute('data-answer')}});
+      ev('glossary_helpful',{{term_slug:page,answer:b.getAttribute('data-answer')}});
     }});
   }});
   document.querySelectorAll('a[data-cta]').forEach(function(a){{
-    a.addEventListener('click',function(){{ev('glossary_cta',{{term:page,target:a.getAttribute('data-cta')}});}});
+    a.addEventListener('click',function(){{ev('glossary_cta',{{term_slug:page,target:a.getAttribute('data-cta')}});}});
   }});
   var tip=document.getElementById('tip');
   document.querySelectorAll('[data-tip]').forEach(function(g){{
