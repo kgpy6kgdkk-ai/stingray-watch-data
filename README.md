@@ -111,6 +111,7 @@ Schema is a flat array under `items`, each entry the same shape as a `feed.json`
 
 - `categories`: sidebar groups (`slug`, `name`, `intro`).
 - `terms`: `name`, `category` (a category slug), `definition`, and optionally `vector` (a `vectorTaxonomy` key; adds the monthly chart and "recent on Watch" list from `archive.json`), `related` (term names) and `explainer` (`context`, `steps` [{`title`, `body`}], `hard`, `lookFor`, `diagram` = a file in `diagrams/`).
+- `seo` (optional): `{"title": ..., "description": ...}` for the Google snippet, when the term's search wording differs from its name. `title` leads with the words people search (about 60 characters max; " | Stingray" is added only if it still fits), `description` is about 150 characters in the Stingray voice, no em-dashes. Both feed `<title>`, the meta description, og:title/og:description and the page's JSON-LD `WebPage`. Without it the page uses "What is <name>?" and the first ~155 characters of the definition. Body copy is unaffected.
 - `updated`: the "last updated" date shown on every page and in `sitemap.xml`. Bump it when you edit copy.
 - `guide` (optional): a one-line pointer from the term page to a guide, `{"slug": "fraud-case-tracker", "line": "... a [free fraud case tracker template]."}`. The text in [brackets] becomes the link; vary it between terms so the anchors aren't identical. Clicks send `glossary_cta` with target `guide_<slug>`.
 

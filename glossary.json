@@ -517,7 +517,11 @@
     {
       "name": "3D Secure (3DS)",
       "category": "payments-and-cards",
-      "definition": "an authentication protocol (branded as Visa Secure, Mastercard Identity Check, etc.) that adds a verification step to online card payments and shifts fraud liability to the card issuer when it's used and the issuer fails to properly challenge a fraudulent transaction."
+      "definition": "an authentication protocol (branded as Visa Secure, Mastercard Identity Check, etc.) that adds a verification step to online card payments and shifts fraud liability to the card issuer when it's used and the issuer fails to properly challenge a fraudulent transaction.",
+      "seo": {
+        "title": "What is 3D Secure (3DS)? Card payment security explained",
+        "description": "3D Secure (Visa Secure, Mastercard Identity Check) adds a verification step to online card payments. What it does at checkout and when liability shifts."
+      }
     },
     {
       "name": "address verification system (AVS)",
@@ -587,6 +591,10 @@
       "name": "first-party fraud",
       "category": "disputes-and-returns",
       "definition": "fraud committed by the actual account holder against the merchant or issuer — friendly fraud, application fraud using one's own real identity, bust-out fraud — as opposed to a criminal impersonating someone else.",
+      "seo": {
+        "title": "What is first-party fraud? Meaning and examples",
+        "description": "First-party fraud is fraud by the real account holder, not an impostor: friendly fraud, application fraud, bust-out. How it differs from third-party fraud."
+      },
       "guide": {
         "slug": "fraud-case-tracker",
         "line": "Track first-party cases and link them to the patterns they share with this [free case tracker spreadsheet]."
@@ -613,7 +621,11 @@
     {
       "name": "return fraud",
       "category": "disputes-and-returns",
-      "definition": "abusing a merchant's return policy — including wardrobing, receipt fraud, and returning stolen, used, or different items than what was originally purchased — distinct from refund abuse in that a real return happens, just a dishonest one."
+      "definition": "abusing a merchant's return policy — including wardrobing, receipt fraud, and returning stolen, used, or different items than what was originally purchased — distinct from refund abuse in that a real return happens, just a dishonest one.",
+      "seo": {
+        "title": "Return fraud: what counts as a fraudulent return",
+        "description": "Return fraud is a real return made dishonestly: wardrobing, receipt fraud, stolen or swapped items. How it differs from refund abuse, in plain terms."
+      }
     },
     {
       "name": "third-party fraud",
@@ -628,7 +640,11 @@
     {
       "name": "anti-money laundering (AML)",
       "category": "accounts-and-identity",
-      "definition": "the laws, regulations, and internal controls designed to stop criminals from disguising illegally obtained money as legitimate income, typically enforced through transaction monitoring and reporting requirements."
+      "definition": "the laws, regulations, and internal controls designed to stop criminals from disguising illegally obtained money as legitimate income, typically enforced through transaction monitoring and reporting requirements.",
+      "seo": {
+        "title": "What is anti-money laundering (AML)? A plain definition",
+        "description": "Anti-money laundering (AML): the laws and controls that stop criminals passing dirty money off as clean, mostly through transaction monitoring and reports."
+      }
     },
     {
       "name": "bust-out fraud",
