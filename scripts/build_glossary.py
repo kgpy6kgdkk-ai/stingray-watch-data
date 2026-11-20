@@ -276,6 +276,9 @@ def shell(title, desc, canonical, jsonld, body, term_slug="", brand=("glossary",
         watch=utm(WATCH_URL, "footer"), site=SITE, stingray=utm(STINGRAY_URL, "footer"))
 
 
+SEO_TITLE_MAX = 60  # Google shows roughly this many characters of a <title>
+
+
 def short(text, n=155):
     text = " ".join(text.split())
     if len(text) <= n:
@@ -453,12 +456,19 @@ def term_page(t, ctx):
     body.append(foot_meta(ctx["updated"]))
     body.append("</article></main></div>")
 
-    if ex.get("steps"):
+    seo = t.get("seo") or {}
+    if seo.get("title"):
+        # Hand-written search title: keep the brand suffix only while it stays inside ~60 chars.
+        title = seo["title"] + (" | Stingray" if len(seo["title"]) + 11 <= SEO_TITLE_MAX else "")
+    elif ex.get("steps"):
         title = "%s: how it works and what analysts look for | Stingray" % (t["name"][0].upper() + t["name"][1:])
     else:
         title = "What is %s? | Stingray fraud glossary" % t["name"]
+    desc = seo.get("description") or short(t["definition"])
     canonical = BASE + s + "/"
     jsonld = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebPage", "@id": canonical, "url": canonical, "name": title, "description": desc,
+         "mainEntity": {"@id": canonical + "#term"}},
         {"@type": "DefinedTerm", "@id": canonical + "#term", "name": t["name"], "description": t["definition"],
          "url": canonical, "inDefinedTermSet": {"@type": "DefinedTermSet", "@id": BASE + "#set",
                                                 "name": "Stingray fraud glossary", "url": BASE}},
@@ -466,7 +476,7 @@ def term_page(t, ctx):
             {"@type": "ListItem", "position": 1, "name": "glossary", "item": BASE},
             {"@type": "ListItem", "position": 2, "name": cat["name"], "item": BASE + "#" + crumb_anchor(cat["slug"])},
             {"@type": "ListItem", "position": 3, "name": t["name"], "item": canonical}]}]}
-    return shell(title, short(t["definition"]), canonical, jsonld, "".join(body), s)
+    return shell(title, desc, canonical, jsonld, "".join(body), s)
 
 
 def letter_of(name):
