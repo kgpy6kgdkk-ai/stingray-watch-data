@@ -185,6 +185,10 @@ INDEX_HTML = """<!doctype html>
 <link rel="icon" href="icon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="Stingray Watch" href="rss.xml">
+<meta property="og:image" content="https://{host}/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stingray Fraud Intelligence">
 <script async src="https://www.googletagmanager.com/gtag/js?id={ga}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga}');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -225,7 +229,7 @@ main p{{margin:0 0 12px}}
 @media (max-width:480px){{h1{{font-size:26px}}.brand img{{height:28px}}}}
 </style>
 </head><body>
-<header class="bar"><div class="wrap"><a class="brand" href="./"><img src="logo-white-horizontal.png" width="187" height="32" alt="Stingray Fraud Intelligence"><span>rss</span></a></div></header>
+<header class="bar"><div class="wrap"><a class="brand" href="./"><img src="logo-white-horizontal.svg" width="187" height="32" alt="Stingray Fraud Intelligence"><span>rss</span></a></div></header>
 <section class="band"><div class="wrap">
 <h1>stingray watch rss</h1>
 <p>chargeback trends, fraud patterns, and industry news from <a href="{watch}?utm_source=rss_landing&amp;utm_medium=referral" data-ga="rss_landing_to_watch">stingray watch</a>, updated twice a week. paste a feed url into your reader, or into slack's rss app to post new items to a channel.</p>

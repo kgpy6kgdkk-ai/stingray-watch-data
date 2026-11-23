@@ -173,7 +173,10 @@ HEAD = """<!doctype html>
 <link rel="canonical" href="{canonical}">
 <meta property="og:type" content="article"><meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}"><meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{site}icon-144.png">
+<meta property="og:image" content="{site}og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stingray Fraud Intelligence">
 <link rel="icon" href="{root}icon.svg" type="image/svg+xml">
 <link rel="icon" href="{root}icon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="{root}apple-touch-icon.png">
@@ -188,7 +191,7 @@ HEAD = """<!doctype html>
 <script type="application/ld+json">{jsonld}</script>
 </head><body>
 <header class="bar"><div class="wrap">
-  <a class="brand" href="{brand_href}"><img class="brand-logo" src="{root}logo-white-horizontal.png" width="187" height="32" alt="Stingray Fraud Intelligence"><span>{brand_label}</span></a>
+  <a class="brand" href="{brand_href}"><img class="brand-logo" src="{root}logo-white-horizontal.svg" width="187" height="32" alt="Stingray Fraud Intelligence"><span>{brand_label}</span></a>
   <nav class="nav" aria-label="Stingray">
     <a href="{watch}" data-cta="nav_watch">watch</a>
     <a href="{root}glossary/">glossary</a>
