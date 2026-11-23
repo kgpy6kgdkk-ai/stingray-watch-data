@@ -2,10 +2,10 @@
    supplies the tokens, top bar, layout, callouts, CTA box and diagram styles.
    Everything here is prefixed tk- so it can't collide with glossary classes
    (glossary.css already uses .num, .n and .cat for other things). */
-:root{--calc:#E9EFEE;--sheet-head:#314747;--flag-bg:#FDE4E0;--flag-fg:#B3321F}
-@media (prefers-color-scheme:dark){:root{--calc:#25302E;--sheet-head:#2A3D3D;--flag-bg:#3A2420;--flag-fg:#FF9C8C}}
+:root{--calc:#E9EFEE;--sheet-head:#334C4B;--flag-bg:#FDE8E2;--flag-fg:#B3321F}
+@media (prefers-color-scheme:dark){:root{--calc:#243432;--sheet-head:#2C4140;--flag-bg:#382A25;--flag-fg:#FFAA94}}
 .tk-band .wrap{padding-block:30px 34px}
-.tk-kicker{font-family:var(--mono);font-size:12px;color:#9FD1CB;letter-spacing:.02em}
+.tk-kicker{font-family:var(--mono);font-size:12px;color:#A0D1CD;letter-spacing:.02em}
 .tk-lede{font-size:17px;line-height:1.65;margin:0 0 14px;max-width:68ch}
 .tk-get{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:22px 0 4px}
 .tk-get .btn{font-size:14px;padding:11px 18px}
@@ -25,7 +25,7 @@ article h2{scroll-margin-top:16px}
 .tk-num{width:34px;height:34px;border-radius:50%;background:var(--slate);color:#FFFFFF;display:grid;place-items:center;font-weight:700;font-size:14px;text-align:center}
 .tk-tab h3{margin:4px 0 4px;font-size:16px;color:var(--ink)}
 .tk-tab p{margin:0 0 8px}
-.tk-tab.heart .tk-num{background:#F25641;color:#1A211F}
+.tk-tab.heart .tk-num{background:#F36E4E;color:#172423}
 .tk-pill{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:4px;background:var(--teal-soft);color:var(--teal);margin-left:6px;vertical-align:2px;font-weight:500}
 .tk-cols{columns:2 230px;column-gap:28px;margin:6px 0 0;padding:0;list-style:none;font-size:14px}
 .tk-cols li{break-inside:avoid;padding:5px 0;border-bottom:1px dashed var(--line);line-height:1.45}
@@ -35,7 +35,7 @@ article h2{scroll-margin-top:16px}
 .tk-sheet{margin:12px 0 6px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
 .tk-sheet-bar{display:flex;gap:2px;padding:6px 8px 0;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
 .tk-sheet-bar span{flex:none;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:5px 5px 0 0;color:var(--muted)}
-.tk-sheet-bar span.on{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-bottom-color:var(--surface);margin-bottom:-1px;box-shadow:inset 0 2px 0 #F25641}
+.tk-sheet-bar span.on{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-bottom-color:var(--surface);margin-bottom:-1px;box-shadow:inset 0 2px 0 #F36E4E}
 .tk-scroll{overflow-x:auto}
 .tk-sheet table{border-collapse:collapse;width:100%;min-width:640px;font-size:12.5px;line-height:1.45}
 .tk-sheet th{background:var(--sheet-head);color:#FFFFFF;text-align:left;font-weight:700;font-size:11.5px;padding:8px 10px;vertical-align:bottom;white-space:nowrap}
@@ -46,7 +46,7 @@ article h2{scroll-margin-top:16px}
 .tk-cap{font-size:12.5px;color:var(--muted);margin:4px 0 0}
 .tk-check{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
 .tk-check label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer;font-size:14.5px}
-.tk-check input{width:18px;height:18px;margin:2px 0 0;accent-color:#3C716C}
+.tk-check input{width:18px;height:18px;margin:2px 0 0;accent-color:#3E716E}
 .tk-check label:has(input:checked){border-color:var(--teal);background:var(--teal-soft)}
 .tk-tally{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin:14px 0 0;font-size:14px}
 .tk-tally output{font-family:var(--mono);font-weight:500;font-size:13px;padding:3px 9px;border-radius:4px;background:var(--calc);color:var(--ink)}

@@ -4,9 +4,9 @@
    class is fs-g-*, so the feed's .fs-row filter code can't reach these rows.
    Kept: .fs-gloss-more / .fs-gloss-all (glossary_page_click), .fs-copy-btn. */
 #glossary{
-  --g-bg:#1A211F; --g-surface:#202927; --g-raise:#263230; --g-line:#314747; --g-line-soft:#2A3836;
-  --g-ink:#F4F7F6; --g-fg:#DCE6E4; --g-muted:#93A8A4; --g-accent:#8CC2BC; --g-teal:#578F8A;
-  --g-chart:#1F9E90; --g-track:#2A3836; --g-coral:#F25641;
+  --g-bg:#172423; --g-surface:#1E2C2B; --g-raise:#253634; --g-line:#334C4B; --g-line-soft:#2A3C3A;
+  --g-ink:#F4F7F6; --g-fg:#DCE6E5; --g-muted:#94AAA6; --g-accent:#8DC2BE; --g-teal:#598F8D;
+  --g-chart:#1F9E90; --g-track:#2A3C3A; --g-coral:#F36E4E;
   --g-sans:Montserrat,"Helvetica Neue",Arial,sans-serif; --g-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --g-top:120px;
   position:fixed;inset:0;z-index:9999;overflow-y:auto;overscroll-behavior:contain;
@@ -46,7 +46,7 @@
 .fs-g-letters button{background:none;border:0;color:var(--g-ink);font:inherit;cursor:pointer}
 .fs-g-letters button:hover{background:var(--g-raise);color:var(--g-accent)}
 .fs-g-letters .fs-g-jv{font-family:var(--g-sans);font-size:12px;font-weight:600;color:var(--g-accent);padding:0 10px;margin-right:6px;border:1px solid var(--g-line)}
-.fs-g-letters span{color:#3B4C4A}
+.fs-g-letters span{color:#3D514E}
 
 /* body column */
 .fs-g-body{max-width:1000px;margin:0 auto;display:grid;gap:40px;
@@ -111,7 +111,7 @@
 
 /* deep-link arrival: one soft flash, nothing for reduced motion */
 #glossary .fs-row-highlight{animation:fsHighlightFlash 1.5s ease-out}
-@media (prefers-reduced-motion:reduce){#glossary .fs-row-highlight{animation:none;background:rgba(87,143,138,.18)}}
+@media (prefers-reduced-motion:reduce){#glossary .fs-row-highlight{animation:none;background:rgba(89,143,141,.18)}}
 
 @media (max-width:640px){
   .fs-g-hdr{gap:10px}
