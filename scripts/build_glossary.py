@@ -188,7 +188,7 @@ HEAD = """<!doctype html>
 <script type="application/ld+json">{jsonld}</script>
 </head><body>
 <header class="bar"><div class="wrap">
-  <a class="brand" href="{brand_href}">stingray <span>{brand_label}</span></a>
+  <a class="brand" href="{brand_href}"><img class="brand-logo" src="{root}logo-white-horizontal.png" width="187" height="32" alt="Stingray Fraud Intelligence"><span>{brand_label}</span></a>
   <nav class="nav" aria-label="Stingray">
     <a href="{watch}" data-cta="nav_watch">watch</a>
     <a href="{root}glossary/">glossary</a>
