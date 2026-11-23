@@ -27,7 +27,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,[
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;flex-wrap:wrap}
 .brand{font-weight:800;letter-spacing:.02em;font-size:17px;color:var(--bar-fg);text-decoration:none}
 .brand{display:inline-flex;align-items:center;gap:12px}.brand-logo{display:block;height:32px;width:auto}
-.brand span{color:#598F8D;font-weight:600;padding-left:12px;border-left:1px solid #334C4B}
+.brand span{color:#8DC2BE;font-weight:600;padding-left:12px;border-left:1px solid #334C4B}
 @media (max-width:480px){.brand-logo{height:28px}}
 .nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600}
 .nav a{color:var(--bar-muted);text-decoration:none}

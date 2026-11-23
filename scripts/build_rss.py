@@ -187,14 +187,50 @@ INDEX_HTML = """<!doctype html>
 <link rel="alternate" type="application/rss+xml" title="Stingray Watch" href="rss.xml">
 <script async src="https://www.googletagmanager.com/gtag/js?id={ga}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{ga}');</script>
-<style>body{{margin:0;background:#000;color:#E1F5EE;font:14px/1.6 ui-monospace,monospace;padding:32px 16px}}
-main{{max-width:640px;margin:0 auto}}h1{{color:#39FF14;font-weight:500;font-size:22px}}a{{color:#4FB37A}}
-li{{margin:10px 0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}}
-button{{font:inherit;font-size:12px;color:#39FF14;background:transparent;border:1px solid #145C3C;border-radius:4px;padding:4px 10px;cursor:pointer}}
-.tip{{color:#8FBFA6;font-size:12px}}</style>
-</head><body><main>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{{--bg:#F4F7F6;--surface:#FFFFFF;--fg:#1D2B2A;--ink:#172423;--muted:#5D716D;--line:#D8E1E0;--teal:#3E716E;--tip-bg:#E3EFED;--tip-line:#598F8D;
+  --bar:#172423;--bar-fg:#F4F7F6;--band:#334C4B;--band-fg:#F4F7F6;--band-muted:#DCE6E5;--band-link:#A9D0CC;--coral:#F36E4E;--focus:#E15E3B;
+  --sans:Montserrat,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:light}}
+@media (prefers-color-scheme:dark){{:root{{--bg:#131D1C;--surface:#1B2827;--fg:#DCE6E5;--ink:#F4F7F6;--muted:#94AAA6;--line:#2C3E3C;--teal:#8DC0BC;--tip-bg:#1F312F;
+  --bar:#0D1615;--focus:#F36E4E;color-scheme:dark}}}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--sans)}}
+a{{color:var(--teal)}}
+a:focus-visible,button:focus-visible{{outline:2px solid var(--focus);outline-offset:2px}}
+.wrap{{max-width:760px;margin:0 auto;padding:0 16px}}
+.bar{{background:var(--bar)}}
+.bar .wrap{{display:flex;align-items:center;padding-block:14px}}
+.brand{{display:inline-flex;align-items:center;gap:12px;text-decoration:none;font-weight:600;font-size:17px;color:#8DC2BE}}
+.brand img{{display:block;height:32px;width:auto}}
+.brand span{{padding-left:12px;border-left:1px solid #334C4B}}
+.band{{background:var(--band);color:var(--band-fg)}}
+.band .wrap{{padding-block:32px 34px}}
+h1{{margin:0 0 10px;font-size:30px;line-height:1.2;font-weight:800;color:var(--band-fg)}}
+.band p{{margin:0;color:var(--band-muted);font-size:16px;max-width:640px}}
+.band a{{color:var(--band-link)}}
+main.wrap{{padding-block:28px 48px}}
+ul{{list-style:none;margin:0 0 24px;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}}
+li{{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:14px 18px;border-top:1px solid var(--line)}}
+li:first-child{{border-top:0}}
+li a{{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink);text-decoration-color:var(--tip-line);text-underline-offset:3px}}
+li span{{color:var(--muted);font-size:13px;flex:1 1 180px}}
+button{{font:700 13px var(--sans);color:#172423;background:var(--coral);border:0;border-radius:8px;padding:8px 14px;min-height:36px;cursor:pointer}}
+button:hover{{background:#F58A70}}
+.tip{{background:var(--tip-bg);border-left:4px solid var(--tip-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 20px;font-size:14px}}
+code{{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}}
+main p{{margin:0 0 12px}}
+@media (max-width:600px){{li{{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:14px}}li a{{grid-column:1;grid-row:1;overflow-wrap:anywhere}}li span{{grid-column:1;grid-row:2}}li button{{grid-column:2;grid-row:1/3;align-self:center}}}}
+@media (max-width:480px){{h1{{font-size:26px}}.brand img{{height:28px}}}}
+</style>
+</head><body>
+<header class="bar"><div class="wrap"><a class="brand" href="./"><img src="logo-white-horizontal.png" width="187" height="32" alt="Stingray Fraud Intelligence"><span>rss</span></a></div></header>
+<section class="band"><div class="wrap">
 <h1>stingray watch rss</h1>
 <p>chargeback trends, fraud patterns, and industry news from <a href="{watch}?utm_source=rss_landing&amp;utm_medium=referral" data-ga="rss_landing_to_watch">stingray watch</a>, updated twice a week. paste a feed url into your reader, or into slack's rss app to post new items to a channel.</p>
+</div></section>
+<main class="wrap">
 <ul>
 {links}
 </ul>
