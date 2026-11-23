@@ -261,20 +261,13 @@ have evolved since this file was written. Do not proceed until you've read it.
      topic (e.g. `repeat_counterfeiter`, `asos_ato_breach`) — distinct enough
      that this week's link is identifiable from GA later, not identical to a
      prior week's.
-   - Shorten it (LinkedIn's crawler otherwise reads the page's own `og:url`
-     and silently drops your query string — see above; a shortener sidesteps
-     this because there's nothing for LinkedIn to canonicalize away):
-     ```bash
-     curl -s "https://tinyurl.com/api-create.php?url=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "<the full utm url>")"
-     ```
-     No account or API key needed. Confirm it resolves correctly before
-     using it:
-     ```bash
-     curl -sI "<the tinyurl output>" | grep -i location
-     ```
-     The `location` header should echo your full UTM URL back exactly. If it
-     doesn't, don't guess — fall back to the plain (unshortened) UTM link in
-     the email and note the shortening step failed.
+   - **Do not shorten it.** No TinyURL, bit.ly or any other shortener:
+     they add a forwarding/preview page before Watch loads (TinyURL now
+     redirects to `tinyurl.com/preview/...`), which Jared does not want.
+     Use the full UTM URL above as the LinkedIn link. LinkedIn's preview
+     card may read the page's `og:url` and drop the query string, but the
+     link pasted in the post text keeps it, and GA still sees LinkedIn as
+     the referrer either way.
 
 10. **Email a run summary to `jared@stingrayfraud.com`** using the Gmail
     tool, every run, regardless of outcome. Subject line should make the
@@ -282,7 +275,7 @@ have evolved since this file was written. Do not proceed until you've read it.
     added` or `Stingray Watch weekly refresh: 0 items added` or `Stingray Watch
     weekly refresh: FAILED at step N`. Body should lead with, in this order:
     1. `Merge to publish: <PR URL>` (from step 7), if a PR was opened.
-    2. `This week's LinkedIn link: <shortened URL>` (from step 9), if one
+    2. `This week's LinkedIn link: <full UTM URL>` (from step 9), if one
        was built — say one line on which item it features and why you
        picked it.
     3. If a PR was opened: `After merging, tell Claude Code: "refresh the
